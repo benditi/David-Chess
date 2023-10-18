@@ -11,9 +11,9 @@ export default function GameBoard() {
 
   return <div className="p-4">
    {board.map((row,rowIndex)=>
-   <div className="flex">
+   <div className="flex" key={rowIndex}>
     {row.map((cell,columnIndex)=>
-     <Cell rowIndex={rowIndex} columnIndex={columnIndex}/>
+     <Cell rowIndex={rowIndex} columnIndex={columnIndex} key={rowIndex.toString()+columnIndex.toString()}/>
     )}
    </div>
    )}

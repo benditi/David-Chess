@@ -1,4 +1,6 @@
 import { twMerge } from "tailwind-merge";
+import BlackQueen from '~/assets/images/Chess_rdt45.svg'
+
 
 type CellProps = {
   columnIndex: number;
@@ -14,13 +16,15 @@ export default function Cell(props: CellProps) {
   return (
     <div
       className={twMerge(
-        "p-8 border-gray-500  w-fit",
+        "p-4 border-gray-500 w-fit",
         cellClass,
         isLeftColumn && rowIndex === 7 && "rounded-bl-sm",
         isRightColumn && rowIndex === 7 && "rounded-br-sm",
         isLeftColumn && rowIndex === 0 && "rounded-tl-sm",
         isRightColumn && rowIndex === 0 && "rounded-tr-sm",
       )}
-    ></div>
+    >
+      <img src={BlackQueen} alt="" className="w-8" />
+    </div>
   );
 }
