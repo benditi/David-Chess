@@ -45,7 +45,6 @@ module.exports = {
         ],
       },
       rules: {
-        "prefer-const": "off",
         "react/jsx-no-leaked-render": [
           "warn",
           { validStrategies: ["ternary"] },
@@ -55,6 +54,7 @@ module.exports = {
 
     // Typescript
     {
+      "prefer-const": "off",
       files: ["**/*.{ts,tsx}"],
       plugins: ["@typescript-eslint", "import"],
       parser: "@typescript-eslint/parser",
