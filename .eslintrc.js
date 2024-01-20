@@ -45,6 +45,7 @@ module.exports = {
         ],
       },
       rules: {
+        "prefer-const": "off",
         "react/jsx-no-leaked-render": [
           "warn",
           { validStrategies: ["ternary"] },

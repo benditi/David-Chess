@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { twMerge } from "tailwind-merge";
-import BlackQueen from '~/assets/images/Chess_rdt45.svg'
 
+import BlackQueen from "~/assets/images/Chess_rdt45.svg";
 
 type CellProps = {
   columnIndex: number;
