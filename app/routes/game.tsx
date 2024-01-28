@@ -5,7 +5,7 @@ import { getPieceSrc } from "~/lib/pieces";
 type BoardCell = {
   rowIndex: number;
   columnIndex: number;
-  piece: string;
+  piece: string | null;
   pieceColor: "white" | "black" | "";
 };
 type ChessBoard = BoardCell[][];
@@ -18,13 +18,25 @@ export default function GameBoard() {
         Array.from(Array(8).keys()).map((cell, columnIndex) => ({
           rowIndex,
           columnIndex,
-          piece: "",
+          piece: null,
           pieceColor: "",
         })),
     );
 
     startBoard.forEach((row, rowIdx) =>
-      row.forEach((cell) => {
+      row.forEach((cell, cellIdx) => {
+        if (rowIdx === 0) {
+          if (cellIdx === 0 || cellIdx === 7) {
+            cell.piece = "rook";
+            cell.pieceColor = "black";
+          } else if (cellIdx === 1 || cellIdx === 6) {
+            cell.piece = "knight";
+            cell.pieceColor = "black";
+          } else if (cellIdx === 2 || cellIdx === 5) {
+            cell.piece = "bishop";
+            cell.pieceColor = "black";
+          }
+        }
         if (rowIdx === 1) {
           cell.piece = "pawn";
           cell.pieceColor = "black";
