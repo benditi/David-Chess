@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Cell from "~/components/Cell";
+import { useUserConext } from "~/lib/AppContext";
 import { getPieceSrc } from "~/lib/pieces";
 
 type BoardCell = {
@@ -50,7 +51,8 @@ export default function GameBoard() {
     console.log("startBoard", startBoard);
     return startBoard;
   };
-
+  let { user, setUser } = useUserConext();
+  console.log("user", user);
   useEffect(() => {
     let startBoard = buildBoard();
     console.log("startBoard effect", startBoard);

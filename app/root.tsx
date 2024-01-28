@@ -9,6 +9,9 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import { useState } from "react";
+import { AppContext } from "~/lib/AppContext";
+import { ContextUser } from "~/routes/context-form";
 
 import { getUser } from "~/session.server";
 import stylesheet from "~/tailwind.css";
@@ -23,6 +26,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export default function App() {
+  let [user, setUser] = useState<ContextUser>({
+    givenName: null,
+    familyName: null,
+  });
   return (
     <html lang="en" className="h-full">
       <head>
@@ -32,7 +39,9 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-        <Outlet />
+        <AppContext.Provider value={{ user, setUser }}>
+          <Outlet />
+        </AppContext.Provider>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
