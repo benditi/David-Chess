@@ -51,7 +51,7 @@ export default function GameBoard() {
     console.log("startBoard", startBoard);
     return startBoard;
   };
-  let { user, setUser } = useUserConext();
+  let { user, setData } = useUserConext();
   console.log("user", user);
   useEffect(() => {
     let startBoard = buildBoard();

@@ -8,7 +8,7 @@ export type ContextUser = {
 };
 
 export default function DavidsForm() {
-  let { user, setUser } = useUserContext();
+  let { user, setData } = useUserContext();
   let handleSubmit = (ev: FormEvent) => {
     ev.preventDefault();
     console.log("ev", ev);
@@ -22,13 +22,13 @@ export default function DavidsForm() {
           name="givenName"
           label="Given Name"
           value={user.givenName || ""}
-          onChange={(value: string) => setUser({ ...user, givenName: value })}
+          onChange={(value: string) => setData("givenName", value)}
         />
         <Input
           name="familyName"
           label="Family Name"
           value={user.familyName || ""}
-          onChange={(value: string) => setUser({ ...user, familyName: value })}
+          onChange={(value: string) => setData("familyName", value)}
         />
         <button>Submit</button>
       </form>
