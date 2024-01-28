@@ -8,29 +8,39 @@ type BoardCell = {
   piece: string;
   pieceColor: "white" | "black" | "";
 };
+type ChessBoard = BoardCell[][];
 
 export default function GameBoard() {
-  let [board, setBoard] = useState<null | BoardCell[][]>(null);
-  let startBoard: BoardCell[][] = Array.from(Array(8).keys()).map(
-    (row, rowIndex) =>
-      Array.from(Array(8).keys()).map((cell, columnIndex) => ({
-        rowIndex,
-        columnIndex,
-        piece: "",
-        pieceColor: "",
-      })),
-  );
-  startBoard.forEach((row, rowIdx) =>
-    row.forEach((cell) => {
-      if (rowIdx === 1) {
-        cell.piece = "rook";
-        cell.pieceColor = "black";
-      }
-    }),
-  );
-  console.log("startBoard", startBoard);
-  // console.log("getPieceSrc", getPieceSrc("black", "rook"));
+  let [board, setBoard] = useState<null | ChessBoard>(null);
+  let buildBoard = () => {
+    let startBoard: ChessBoard = Array.from(Array(8).keys()).map(
+      (row, rowIndex) =>
+        Array.from(Array(8).keys()).map((cell, columnIndex) => ({
+          rowIndex,
+          columnIndex,
+          piece: "",
+          pieceColor: "",
+        })),
+    );
+
+    startBoard.forEach((row, rowIdx) =>
+      row.forEach((cell) => {
+        if (rowIdx === 1) {
+          cell.piece = "pawn";
+          cell.pieceColor = "black";
+        }
+        if (rowIdx === 6) {
+          cell.piece = "pawn";
+          cell.pieceColor = "white";
+        }
+      }),
+    );
+    console.log("startBoard", startBoard);
+    return startBoard;
+  };
+
   useEffect(() => {
+    let startBoard = buildBoard();
     console.log("startBoard effect", startBoard);
     setBoard(startBoard);
   }, []);
