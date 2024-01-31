@@ -7,11 +7,12 @@ type CellProps = {
   columnIndex: number;
   rowIndex: number;
   pieceSrc: string;
+  onClick: () => void;
 };
 export default function Cell(props: CellProps) {
-  let { columnIndex, rowIndex, pieceSrc } = props;
+  let { columnIndex, rowIndex, pieceSrc, onClick } = props;
   let cellClass =
-    (columnIndex + rowIndex) % 2 === 0 ? "bg-black_cell" : "bg-white_cell";
+    (columnIndex + rowIndex) % 2 === 0 ? "bg-white_cell" : "bg-black_cell";
   let isLeftColumn = columnIndex === 0;
   let isRightColumn = columnIndex === 7;
 
@@ -25,6 +26,7 @@ export default function Cell(props: CellProps) {
         isLeftColumn && rowIndex === 0 && "rounded-tl-sm",
         isRightColumn && rowIndex === 0 && "rounded-tr-sm",
       )}
+      onClick={onClick}
     >
       <img src={pieceSrc} alt="" className="w-8" />
     </div>
