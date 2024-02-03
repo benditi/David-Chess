@@ -1,4 +1,5 @@
 import { ChessBoard, PieceColor } from "~/routes/game";
+type PositionTuple = [number, number];
 
 export function buildBoard() {
   let startBoard: ChessBoard = Array.from(Array(8).keys()).map(
@@ -64,12 +65,12 @@ export function buildBoard() {
 
 /**
  *
- * @param piece the chosen cell the user clicked on
+ * @param piece the chosen piece the user clicked on
  * @param board the state of the board
- * @returns an array of tupples with all the legal cells that are open for the player: [ [1,2]-[rowIndex, columnIndex] ]
+ * @returns an array of tuples with all the legal cells that are open for the player: [ [1,2]-[rowIndex, columnIndex] ]
  */
 
-export function onSelectCell(
+export function getOpenPositions(
   cell: {
     rowIndex: number;
     columnIndex: number;
@@ -79,18 +80,63 @@ export function onSelectCell(
   board: ChessBoard | null,
 ) {
   let { pieceColor, piece, rowIndex, columnIndex } = cell;
+  let positionsArray: PositionTuple[] = [];
+  if (!board) {
+    return [];
+  }
   if (!pieceColor) {
     return [];
   }
-  if (pieceColor === "white") {
+
+  if (pieceColor === "black") {
     if (piece === "pawn") {
-      //checking if can go to moves
-      if (columnIndex === 1) {
-        return [
-          [2, columnIndex],
-          [3, columnIndex],
-        ];
+      // checking diagnols
+      if (rowIndex !== 7) {
+        if (columnIndex > 0) {
+          let leftDiagnolPiece = board[rowIndex + 1][columnIndex - 1].piece;
+          console.log("rowIndex + 1", rowIndex + 1);
+          console.log("columnIndex - 1", columnIndex - 1);
+          console.log("leftDiagnolPiece", leftDiagnolPiece);
+
+          let leftDiagnolPieceWhite =
+            board[rowIndex + 1][columnIndex - 1].pieceColor === "white";
+          console.log("leftDiagnolPieceWhite", leftDiagnolPieceWhite);
+
+          if (leftDiagnolPiece && leftDiagnolPieceWhite) {
+            console.log("pushing [rowIndex + 1, columnIndex - 1]", [
+              rowIndex + 1,
+              columnIndex - 1,
+            ]);
+            positionsArray.push([rowIndex + 1, columnIndex - 1]);
+          }
+          let rightDiagnolPiece = board[rowIndex + 1][columnIndex + 1].piece;
+          let rightDiagnolPieceWhite =
+            board[rowIndex + 1][columnIndex + 1].pieceColor === "white";
+          if (rightDiagnolPiece && rightDiagnolPieceWhite) {
+            positionsArray.push([rowIndex + 1, columnIndex + 1]);
+          }
+        }
+      }
+      let isBlockedNext = board[rowIndex + 1][columnIndex].piece;
+      if (isBlockedNext) {
+        return positionsArray;
+      }
+      //checking if can go 2 moves (first not blocked)
+      if (rowIndex === 1) {
+        let isBlockedSecond = board[3][columnIndex].piece;
+        console.log("isBlockedSecond", isBlockedSecond);
+        if (isBlockedSecond) {
+          positionsArray.push([2, columnIndex]);
+          return positionsArray;
+        }
+        positionsArray.push([2, columnIndex]);
+        positionsArray.push([3, columnIndex]);
+        return positionsArray;
       }
     }
   }
+}
+
+export function copyBoard(board: ChessBoard): ChessBoard {
+  return board.map((row) => row.map((cell) => ({ ...cell })));
 }

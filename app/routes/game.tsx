@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Cell from "~/components/Cell";
 import { useUserConext } from "~/lib/AppContext";
-import { buildBoard, onSelectCell } from "~/lib/board";
+import { buildBoard, getOpenPositions } from "~/lib/board";
 import { getPieceSrc } from "~/lib/pieces";
 
 export type PieceColor = "white" | "black" | "";
@@ -33,7 +33,7 @@ export default function GameBoard() {
                 pieceSrc={getPieceSrc(cell.pieceColor, cell.piece)}
                 key={rowIndex.toString() + columnIndex.toString()}
                 onClick={() =>
-                  onSelectCell(
+                  getOpenPositions(
                     {
                       rowIndex,
                       columnIndex,
