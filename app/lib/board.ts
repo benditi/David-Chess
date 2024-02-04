@@ -1,4 +1,4 @@
-import { ChessBoard, PieceColor } from "~/routes/game";
+import { BoardCell, ChessBoard, PieceColor } from "~/routes/game";
 type PositionTuple = [number, number];
 
 export function buildBoard() {
@@ -94,19 +94,9 @@ export function getOpenPositions(
       if (rowIndex !== 7) {
         if (columnIndex > 0) {
           let leftDiagnolPiece = board[rowIndex + 1][columnIndex - 1].piece;
-          console.log("rowIndex + 1", rowIndex + 1);
-          console.log("columnIndex - 1", columnIndex - 1);
-          console.log("leftDiagnolPiece", leftDiagnolPiece);
-
           let leftDiagnolPieceWhite =
             board[rowIndex + 1][columnIndex - 1].pieceColor === "white";
-          console.log("leftDiagnolPieceWhite", leftDiagnolPieceWhite);
-
           if (leftDiagnolPiece && leftDiagnolPieceWhite) {
-            console.log("pushing [rowIndex + 1, columnIndex - 1]", [
-              rowIndex + 1,
-              columnIndex - 1,
-            ]);
             positionsArray.push([rowIndex + 1, columnIndex - 1]);
           }
           let rightDiagnolPiece = board[rowIndex + 1][columnIndex + 1].piece;
@@ -139,4 +129,17 @@ export function getOpenPositions(
 
 export function copyBoard(board: ChessBoard): ChessBoard {
   return board.map((row) => row.map((cell) => ({ ...cell })));
+}
+
+export function movePiece(
+  cell: BoardCell,
+  destination: { rowIndex: number; columnIndex: number },
+  board: ChessBoard,
+) {
+  let { rowIndex, columnIndex, piece, pieceColor } = cell;
+  board[destination.rowIndex][destination.columnIndex].piece = piece;
+  board[destination.rowIndex][destination.columnIndex].pieceColor = pieceColor;
+  board[rowIndex][columnIndex].piece = "";
+  board[rowIndex][columnIndex].pieceColor = "";
+  return board;
 }
