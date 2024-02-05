@@ -88,43 +88,55 @@ export function getOpenPositions(
     return [];
   }
 
-  if (pieceColor === "black") {
-    if (piece === "pawn") {
-      // checking diagnols
-      if (rowIndex !== 7) {
-        if (columnIndex > 0) {
-          let leftDiagnolPiece = board[rowIndex + 1][columnIndex - 1].piece;
-          let leftDiagnolPieceWhite =
-            board[rowIndex + 1][columnIndex - 1].pieceColor === "white";
-          if (leftDiagnolPiece && leftDiagnolPieceWhite) {
-            positionsArray.push([rowIndex + 1, columnIndex - 1]);
-          }
-          let rightDiagnolPiece = board[rowIndex + 1][columnIndex + 1].piece;
-          let rightDiagnolPieceWhite =
-            board[rowIndex + 1][columnIndex + 1].pieceColor === "white";
-          if (rightDiagnolPiece && rightDiagnolPieceWhite) {
-            positionsArray.push([rowIndex + 1, columnIndex + 1]);
-          }
+  // if (pieceColor === "black") {
+  if (piece === "pawn") {
+    let rowMovementDirection = pieceColor === "black" ? 1 : -1;
+    // checking diagnols
+    if (rowIndex !== 7) {
+      if (columnIndex > 0) {
+        let leftDiagnolPiece =
+          board[rowIndex + rowMovementDirection][columnIndex - 1].piece;
+        let leftDiagnolOppositeColor =
+          board[rowIndex + rowMovementDirection][columnIndex - 1].pieceColor !==
+          pieceColor;
+        if (leftDiagnolPiece && leftDiagnolOppositeColor) {
+          positionsArray.push([
+            rowIndex + rowMovementDirection,
+            columnIndex - 1,
+          ]);
         }
-      }
-      let isBlockedNext = board[rowIndex + 1][columnIndex].piece;
-      if (isBlockedNext) {
-        return positionsArray;
-      }
-      //checking if can go 2 moves (first not blocked)
-      if (rowIndex === 1) {
-        let isBlockedSecond = board[3][columnIndex].piece;
-        console.log("isBlockedSecond", isBlockedSecond);
-        if (isBlockedSecond) {
-          positionsArray.push([2, columnIndex]);
-          return positionsArray;
+        let rightDiagnolPiece =
+          board[rowIndex + rowMovementDirection][columnIndex + 1].piece;
+        let rightDiagnolOppositeColor =
+          board[rowIndex + rowMovementDirection][columnIndex + 1].pieceColor !==
+          pieceColor;
+        if (rightDiagnolPiece && rightDiagnolOppositeColor) {
+          positionsArray.push([rowIndex + 1, columnIndex + 1]);
         }
-        positionsArray.push([2, columnIndex]);
-        positionsArray.push([3, columnIndex]);
-        return positionsArray;
       }
     }
+    let isBlockedNext =
+      board[rowIndex + rowMovementDirection][columnIndex].piece;
+    if (isBlockedNext) {
+      return positionsArray;
+    }
+    positionsArray.push([rowIndex + rowMovementDirection, columnIndex]);
+    //checking if can go 2 moves (first not blocked)
+    if (
+      (rowIndex === 1 && pieceColor === "black") ||
+      (rowIndex === 6 && pieceColor === "white")
+    ) {
+      let twoStepsIdx = rowIndex + 2 * rowMovementDirection;
+      let isBlockedSecond = board[twoStepsIdx][columnIndex].piece;
+      console.log("isBlockedSecond", isBlockedSecond);
+      if (isBlockedSecond) {
+        return positionsArray;
+      }
+      positionsArray.push([twoStepsIdx, columnIndex]);
+    }
+    return positionsArray;
   }
+  // }
 }
 
 export function copyBoard(board: ChessBoard): ChessBoard {
