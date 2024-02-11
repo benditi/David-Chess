@@ -91,30 +91,34 @@ export function getOpenPositions(
   // if (pieceColor === "black") {
   if (piece === "pawn") {
     let rowMovementDirection = pieceColor === "black" ? 1 : -1;
+    // checking edge rows
+    if (
+      (rowIndex === 0 && pieceColor === "white") ||
+      (rowIndex === 7 && pieceColor === "black")
+    ) {
+      return [];
+    }
     // checking diagnols
-    if (rowIndex !== 7) {
-      if (columnIndex > 0) {
-        let leftDiagnolPiece =
-          board[rowIndex + rowMovementDirection][columnIndex - 1].piece;
-        let leftDiagnolOppositeColor =
-          board[rowIndex + rowMovementDirection][columnIndex - 1].pieceColor !==
-          pieceColor;
-        if (leftDiagnolPiece && leftDiagnolOppositeColor) {
-          positionsArray.push([
-            rowIndex + rowMovementDirection,
-            columnIndex - 1,
-          ]);
-        }
-        let rightDiagnolPiece =
-          board[rowIndex + rowMovementDirection][columnIndex + 1].piece;
-        let rightDiagnolOppositeColor =
-          board[rowIndex + rowMovementDirection][columnIndex + 1].pieceColor !==
-          pieceColor;
-        if (rightDiagnolPiece && rightDiagnolOppositeColor) {
-          positionsArray.push([rowIndex + 1, columnIndex + 1]);
-        }
+    if (columnIndex > 0) {
+      let leftDiagnolPiece =
+        board[rowIndex + rowMovementDirection][columnIndex - 1].piece;
+      let leftDiagnolOppositeColor =
+        board[rowIndex + rowMovementDirection][columnIndex - 1].pieceColor !==
+        pieceColor;
+      if (leftDiagnolPiece && leftDiagnolOppositeColor) {
+        positionsArray.push([rowIndex + rowMovementDirection, columnIndex - 1]);
+      }
+      let rightDiagnolPiece =
+        board[rowIndex + rowMovementDirection][columnIndex + 1].piece;
+      let rightDiagnolOppositeColor =
+        board[rowIndex + rowMovementDirection][columnIndex + 1].pieceColor !==
+        pieceColor;
+      if (rightDiagnolPiece && rightDiagnolOppositeColor) {
+        positionsArray.push([rowIndex + 1, columnIndex + 1]);
       }
     }
+
+    //
     let isBlockedNext =
       board[rowIndex + rowMovementDirection][columnIndex].piece;
     if (isBlockedNext) {
