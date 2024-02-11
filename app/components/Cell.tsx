@@ -8,18 +8,21 @@ type CellProps = {
   rowIndex: number;
   pieceSrc: string;
   onClick: () => void;
+  isSelected: boolean;
 };
 export default function Cell(props: CellProps) {
-  let { columnIndex, rowIndex, pieceSrc, onClick } = props;
+  let { columnIndex, rowIndex, pieceSrc, onClick, isSelected } = props;
   let cellClass =
     (columnIndex + rowIndex) % 2 === 0 ? "bg-white_cell" : "bg-black_cell";
   let isLeftColumn = columnIndex === 0;
   let isRightColumn = columnIndex === 7;
-
+  if (isSelected) {
+    console.log("cell selected!");
+  }
   return (
     <div
       className={twMerge(
-        "p-4 border-gray-500 w-16 h-16",
+        "relative flex items-center justify-center border-gray-500 w-16 h-16",
         cellClass,
         isLeftColumn && rowIndex === 7 && "rounded-bl-sm",
         isRightColumn && rowIndex === 7 && "rounded-br-sm",
@@ -28,7 +31,16 @@ export default function Cell(props: CellProps) {
       )}
       onClick={onClick}
     >
-      <img src={pieceSrc} alt="" className="w-8" />
+      {pieceSrc ? <img src={pieceSrc} alt="" className="w-8" /> : null}
+      {isSelected && (
+        <div
+          className={
+            pieceSrc
+              ? "h-full w-full absolute border-4 rounded-full border-openGrey"
+              : "p-2 bg-openGrey rounded-full"
+          }
+        ></div>
+      )}
     </div>
   );
 }

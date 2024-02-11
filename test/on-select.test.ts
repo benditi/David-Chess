@@ -61,7 +61,6 @@ test("expect pawn on b to have positions: [2,1], [2,0] when [3,1] is occupied an
 
 let fourthBoard = copyBoard(initialBoard);
 movePiece(fourthBoard[6][0], { rowIndex: 4, columnIndex: 0 }, fourthBoard);
-console.log("fourthBoard", fourthBoard);
 
 test("expect white pawn on [4,0]  to have positions: [3,0] when no piece in fron", () => {
   expect(
@@ -112,7 +111,6 @@ test("expect white pawn on [0,7] at the edge to have no forward positions", () =
 
 let eighthBoard = copyBoard(initialBoard);
 movePiece(eighthBoard[1][0], { rowIndex: 7, columnIndex: 0 }, eighthBoard);
-console.log("eighthBoard", eighthBoard);
 test("expect black pawn on [7,0] at the edge to have no forward positions", () => {
   expect(
     getOpenPositions(
@@ -120,4 +118,93 @@ test("expect black pawn on [7,0] at the edge to have no forward positions", () =
       eighthBoard,
     ),
   ).toStrictEqual([]);
+});
+
+test("expect black's bishop (white diagnol) on [3,3] to have diagonal movement options", () => {
+  let board = copyBoard(initialBoard); // Copy the initial board state
+  board[1][0].piece = null; // Simulate an occupied cell by removing the piece from [0,6]
+  board[0][6].piece = "pawn"; // Simulate a pawn at [0,6] to prevent bishop movement there
+  board[0][2].piece = null; // Ensure no three black bishops
+  board[3][3].piece = "bishop";
+  board[3][3].pieceColor = "black";
+  console.log("board", board);
+  const results = getOpenPositions(
+    { rowIndex: 3, columnIndex: 3, pieceColor: "black", piece: "bishop" },
+    board, // Use the adjusted board state
+  );
+  const expectedResults = [
+    [2, 2],
+    [2, 4],
+    [4, 2],
+    [5, 1],
+    [6, 0],
+    [4, 4],
+    [5, 5],
+    [6, 6],
+  ];
+  console.log("results", results);
+
+  // Check that each expected result is contained in the actual results
+  expectedResults.forEach((expected) => {
+    expect(results).toContainEqual(expected);
+  });
+
+  // Ensure that the number of actual results matches the number of expected results
+  expect(results?.length).toBe(expectedResults.length);
+});
+
+test("expect black's bishop (black diagnol) on [3,2] to have some diagonal movement options blocked by white pawn", () => {
+  let board = copyBoard(initialBoard);
+
+  board[5][0].piece = ""; // Move black bishop
+  board[5][0].pieceColor = "";
+  board[3][2].piece = "bishop"; // Place a black bishop
+  board[3][2].pieceColor = "black";
+  board[6][3].piece = ""; // Move white pawn
+  board[6][3].pieceColor = "";
+  board[4][3].piece = "pawn"; // Place a white pawn
+  board[4][3].pieceColor = "white";
+  console.log("board", board);
+  const results = getOpenPositions(board[3][2], board);
+  const expectedResults = [
+    [2, 1],
+    [2, 3],
+    [4, 1],
+    [5, 0],
+    [4, 3],
+  ];
+  expectedResults.forEach((expected) => {
+    expect(results).toContainEqual(expected);
+  });
+  expect(results?.length).toBe(expectedResults.length);
+});
+
+test("expect bishop at corner to have diagonal movement options after removing blocking pieces", () => {
+  let board = copyBoard(initialBoard); // Copy the initial board state
+  board[0][0].piece = "bishop"; // Place a bishop at the corner
+  board[0][0].pieceColor = "white"; // Ensure it's a white bishop
+  // free diagnol from pieces
+  board[1][1].piece = "";
+  board[1][1].pieceColor = "";
+  board[6][6].piece = "";
+  board[6][6].pieceColor = "";
+  board[7][7].piece = "";
+  board[7][7].pieceColor = "";
+  const results = getOpenPositions(
+    { rowIndex: 0, columnIndex: 0, pieceColor: "white", piece: "bishop" },
+    board,
+  );
+  const expectedResults = [
+    [1, 1],
+    [2, 2],
+    [3, 3],
+    [4, 4],
+    [5, 5],
+    [6, 6],
+    [7, 7],
+  ];
+  expectedResults.forEach((expected) => {
+    expect(results).toContainEqual(expected);
+  });
+  expect(results?.length).toBe(expectedResults.length);
 });

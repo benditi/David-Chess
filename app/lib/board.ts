@@ -1,5 +1,5 @@
 import { BoardCell, ChessBoard, PieceColor } from "~/routes/game";
-type PositionTuple = [number, number];
+export type PositionTuple = [number, number];
 
 export function buildBoard() {
   let startBoard: ChessBoard = Array.from(Array(8).keys()).map(
@@ -88,7 +88,6 @@ export function getOpenPositions(
     return [];
   }
 
-  // if (pieceColor === "black") {
   if (piece === "pawn") {
     let rowMovementDirection = pieceColor === "black" ? 1 : -1;
     // checking edge rows
@@ -132,7 +131,6 @@ export function getOpenPositions(
     ) {
       let twoStepsIdx = rowIndex + 2 * rowMovementDirection;
       let isBlockedSecond = board[twoStepsIdx][columnIndex].piece;
-      console.log("isBlockedSecond", isBlockedSecond);
       if (isBlockedSecond) {
         return positionsArray;
       }
@@ -140,7 +138,74 @@ export function getOpenPositions(
     }
     return positionsArray;
   }
-  // }
+  if (piece === "bishop") {
+    // bottom left
+    for (
+      let i = rowIndex - 1, j = columnIndex - 1;
+      i >= 0 && j >= 0;
+      i--, j--
+    ) {
+      console.log("bottom left i,j", i, j);
+      if (board[i][j].piece) {
+        if (board[i][j].pieceColor !== pieceColor) {
+          positionsArray.push([i, j]);
+        }
+        break;
+      } else {
+        positionsArray.push([i, j]);
+      }
+    }
+    // bottom right
+    for (
+      let i = rowIndex - 1, j = columnIndex + 1;
+      i >= 0 && j <= 7;
+      i--, j++
+    ) {
+      console.log("bottom right i,j", i, j);
+      if (board[i][j].piece) {
+        if (board[i][j].pieceColor !== pieceColor) {
+          positionsArray.push([i, j]);
+        }
+        break;
+      } else {
+        positionsArray.push([i, j]);
+      }
+    }
+    // top left
+    for (
+      let i = rowIndex + 1, j = columnIndex - 1;
+      i <= 7 && j >= 0;
+      i++, j--
+    ) {
+      console.log("top left i,j", i, j);
+      if (board[i][j].piece) {
+        if (board[i][j].pieceColor !== pieceColor) {
+          positionsArray.push([i, j]);
+        }
+        break;
+      } else {
+        positionsArray.push([i, j]);
+      }
+    }
+    // top right
+    for (
+      let i = rowIndex + 1, j = columnIndex + 1;
+      i <= 7 || j <= 7;
+      i++, j++
+    ) {
+      console.log("top right i,j", i, j);
+
+      if (board[i][j].piece) {
+        if (board[i][j].pieceColor !== pieceColor) {
+          positionsArray.push([i, j]);
+        }
+        break;
+      } else {
+        positionsArray.push([i, j]);
+      }
+    }
+    return positionsArray;
+  }
 }
 
 export function copyBoard(board: ChessBoard): ChessBoard {
