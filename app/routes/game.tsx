@@ -35,6 +35,15 @@ export default function GameBoard() {
     piece: string | null;
     pieceColor: PieceColor;
   }) {
+    // case clicking allready selected cell
+    if (
+      seletedCell?.columnIndex === cell.columnIndex &&
+      seletedCell.rowIndex === cell.rowIndex
+    ) {
+      setOpenCells(undefined);
+      setSelectedCell(null);
+      return;
+    }
     let isCellOpen = openCells?.length
       ? openCells.some(
           (tuple) =>
@@ -43,18 +52,15 @@ export default function GameBoard() {
         ? true
         : false
       : false;
-    console.log("board", board);
     if (isCellOpen && seletedCell && board) {
-      console.log("isCellOpen", isCellOpen);
-      console.log("seletedCell", seletedCell);
       let newBoard = movePiece(seletedCell, cell, board);
-      console.log("newBoard", newBoard);
       setBoard(newBoard);
       setOpenCells(undefined);
       setSelectedCell(null);
       return;
     }
     let openPositions = getOpenPositions(cell, board);
+    console.log("openPositions", openPositions);
     setOpenCells(openPositions);
     setSelectedCell(cell);
   }

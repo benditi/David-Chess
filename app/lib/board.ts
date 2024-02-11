@@ -90,6 +90,8 @@ export function getOpenPositions(
 
   if (piece === "pawn") {
     let rowMovementDirection = pieceColor === "black" ? 1 : -1;
+    console.log("rowMovementDirection", rowMovementDirection);
+
     // checking edge rows
     if (
       (rowIndex === 0 && pieceColor === "white") ||
@@ -113,7 +115,7 @@ export function getOpenPositions(
         board[rowIndex + rowMovementDirection][columnIndex + 1].pieceColor !==
         pieceColor;
       if (rightDiagnolPiece && rightDiagnolOppositeColor) {
-        positionsArray.push([rowIndex + 1, columnIndex + 1]);
+        positionsArray.push([rowIndex + rowMovementDirection, columnIndex + 1]);
       }
     }
 
