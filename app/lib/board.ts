@@ -90,8 +90,6 @@ export function getOpenPositions(
 
   if (piece === "pawn") {
     let rowMovementDirection = pieceColor === "black" ? 1 : -1;
-    console.log("rowMovementDirection", rowMovementDirection);
-
     // checking edge rows
     if (
       (rowIndex === 0 && pieceColor === "white") ||
@@ -147,7 +145,6 @@ export function getOpenPositions(
       i >= 0 && j >= 0;
       i--, j--
     ) {
-      console.log("bottom left i,j", i, j);
       if (board[i][j].piece) {
         if (board[i][j].pieceColor !== pieceColor) {
           positionsArray.push([i, j]);
@@ -174,36 +171,68 @@ export function getOpenPositions(
       }
     }
     // top left
-    for (
-      let i = rowIndex + 1, j = columnIndex - 1;
-      i <= 7 && j >= 0;
-      i++, j--
-    ) {
-      console.log("top left i,j", i, j);
-      if (board[i][j].piece) {
-        if (board[i][j].pieceColor !== pieceColor) {
+    if (rowIndex !== 7 && columnIndex !== 0) {
+      for (
+        let i = rowIndex + 1, j = columnIndex - 1;
+        i <= 7 && j >= 0;
+        i++, j--
+      ) {
+        if (board[i][j].piece) {
+          if (board[i][j].pieceColor !== pieceColor) {
+            positionsArray.push([i, j]);
+          }
+          break;
+        } else {
           positionsArray.push([i, j]);
         }
-        break;
-      } else {
-        positionsArray.push([i, j]);
       }
     }
     // top right
-    for (
-      let i = rowIndex + 1, j = columnIndex + 1;
-      i <= 7 || j <= 7;
-      i++, j++
-    ) {
-      console.log("top right i,j", i, j);
-
-      if (board[i][j].piece) {
-        if (board[i][j].pieceColor !== pieceColor) {
+    if (rowIndex !== 7 && columnIndex !== 7) {
+      for (
+        let i = rowIndex + 1, j = columnIndex + 1;
+        i <= 7 && j <= 7;
+        i++, j++
+      ) {
+        if (board[i][j].piece) {
+          if (board[i][j].pieceColor !== pieceColor) {
+            positionsArray.push([i, j]);
+          }
+          break;
+        } else {
           positionsArray.push([i, j]);
         }
-        break;
-      } else {
-        positionsArray.push([i, j]);
+      }
+    }
+    return positionsArray;
+  }
+  if (piece === "knight") {
+    for (let i = -2; i <= 2; i++) {
+      if (i === 0) {
+        continue;
+      }
+      let j = Math.abs(i) === 2 ? 1 : 2;
+      let xIndex = rowIndex + i;
+      if (xIndex < 0 || xIndex > 7) {
+        continue;
+      }
+      let yIndex = columnIndex - j;
+      if (0 <= yIndex && yIndex <= 7) {
+        if (
+          !board[xIndex][yIndex].piece ||
+          board[xIndex][yIndex].pieceColor !== pieceColor
+        ) {
+          positionsArray.push([xIndex, yIndex]);
+        }
+      }
+      yIndex = columnIndex + j;
+      if (yIndex <= 7) {
+        if (
+          !board[xIndex][yIndex].piece ||
+          board[xIndex][yIndex].pieceColor !== pieceColor
+        ) {
+          positionsArray.push([xIndex, yIndex]);
+        }
       }
     }
     return positionsArray;

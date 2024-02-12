@@ -208,3 +208,70 @@ test("expect bishop at corner to have diagonal movement options after removing b
   });
   expect(results?.length).toBe(expectedResults.length);
 });
+
+test("expect white knight to have correct movement options after moving to [3,4]", () => {
+  let board = copyBoard(initialBoard); // Copy the initial board state
+  // Move the white knight to position [3,4]
+  board[3][4].piece = "knight";
+  board[3][4].pieceColor = "white";
+  board[7][6].piece = null;
+  board[7][6].pieceColor = "";
+
+  // Get the open positions for the white knight at [3,4]
+  const results = getOpenPositions(
+    { rowIndex: 3, columnIndex: 4, pieceColor: "white", piece: "knight" },
+    board,
+  );
+  const expectedResults = [
+    [1, 3], // Knight's L-shape movement options
+    [1, 5],
+    [2, 2],
+    [2, 6],
+    [4, 2],
+    [4, 6],
+    [5, 3],
+    [5, 5],
+  ];
+  expectedResults.forEach((expected) => {
+    expect(results).toContainEqual(expected);
+  });
+  expect(results?.length).toBe(expectedResults.length);
+});
+
+test("expect white knight to have correct movement options after moving to [5,5] and after some pawn movments", () => {
+  let board = copyBoard(initialBoard);
+  board[5][5].piece = "knight";
+  board[5][5].pieceColor = "white";
+  board[7][6].piece = null;
+  board[7][6].pieceColor = "";
+  // move white pawn up the file
+  board[6][3].piece = null;
+  board[6][3].pieceColor = "";
+  board[4][3].piece = "pawn";
+  board[4][3].pieceColor = "white";
+  // move black pawn up the file
+  board[1][4].piece = null;
+  board[1][4].pieceColor = "";
+  board[3][4].piece = "pawn";
+  board[3][4].pieceColor = "black";
+  // move second black pawn up only 1 file
+  board[1][6].piece = null;
+  board[1][6].pieceColor = "";
+  board[2][6].piece = "pawn";
+  board[2][6].pieceColor = "black";
+  // Get the open positions for the white knight at [5,5]
+  // { rowIndex:5, columnIndex: 5, pieceColor: "white", piece: "knight" },
+  const results = getOpenPositions(board[5][5], board);
+
+  const expectedResults = [
+    [3, 4],
+    [3, 6],
+    [4, 7],
+    [7, 6],
+    [6, 3],
+  ];
+  expectedResults.forEach((expected) => {
+    expect(results).toContainEqual(expected);
+  });
+  expect(results?.length).toBe(expectedResults.length);
+});
