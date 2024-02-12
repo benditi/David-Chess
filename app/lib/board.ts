@@ -237,6 +237,53 @@ export function getOpenPositions(
     }
     return positionsArray;
   }
+  if (piece === "rook") {
+    // down the file
+    for (let i = rowIndex - 1; i >= 0; i--) {
+      if (board[i][columnIndex].piece) {
+        if (board[i][columnIndex].pieceColor !== pieceColor) {
+          positionsArray.push([i, columnIndex]);
+        }
+        break;
+      } else {
+        positionsArray.push([i, columnIndex]);
+      }
+    }
+    // up the file
+    for (let i = rowIndex + 1; i <= 7; i++) {
+      if (board[i][columnIndex].piece) {
+        if (board[i][columnIndex].pieceColor !== pieceColor) {
+          positionsArray.push([i, columnIndex]);
+        }
+        break;
+      } else {
+        positionsArray.push([i, columnIndex]);
+      }
+    }
+    // right of file
+    for (let i = columnIndex + 1; i <= 7; i++) {
+      if (board[rowIndex][i].piece) {
+        if (board[rowIndex][i].pieceColor !== pieceColor) {
+          positionsArray.push([rowIndex, i]);
+        }
+        break;
+      } else {
+        positionsArray.push([rowIndex, i]);
+      }
+    }
+    // left of file
+    for (let i = columnIndex - 1; i >= 0; i--) {
+      if (board[rowIndex][i].piece) {
+        if (board[rowIndex][i].pieceColor !== pieceColor) {
+          positionsArray.push([rowIndex, i]);
+        }
+        break;
+      } else {
+        positionsArray.push([rowIndex, i]);
+      }
+    }
+    return positionsArray;
+  }
 }
 
 export function copyBoard(board: ChessBoard): ChessBoard {

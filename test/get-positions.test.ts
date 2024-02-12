@@ -127,7 +127,6 @@ test("expect black's bishop (white diagnol) on [3,3] to have diagonal movement o
   board[0][2].piece = null; // Ensure no three black bishops
   board[3][3].piece = "bishop";
   board[3][3].pieceColor = "black";
-  console.log("board", board);
   const results = getOpenPositions(
     { rowIndex: 3, columnIndex: 3, pieceColor: "black", piece: "bishop" },
     board, // Use the adjusted board state
@@ -142,7 +141,6 @@ test("expect black's bishop (white diagnol) on [3,3] to have diagonal movement o
     [5, 5],
     [6, 6],
   ];
-  console.log("results", results);
 
   // Check that each expected result is contained in the actual results
   expectedResults.forEach((expected) => {
@@ -155,7 +153,6 @@ test("expect black's bishop (white diagnol) on [3,3] to have diagonal movement o
 
 test("expect black's bishop (black diagnol) on [3,2] to have some diagonal movement options blocked by white pawn", () => {
   let board = copyBoard(initialBoard);
-
   board[5][0].piece = ""; // Move black bishop
   board[5][0].pieceColor = "";
   board[3][2].piece = "bishop"; // Place a black bishop
@@ -164,7 +161,6 @@ test("expect black's bishop (black diagnol) on [3,2] to have some diagonal movem
   board[6][3].pieceColor = "";
   board[4][3].piece = "pawn"; // Place a white pawn
   board[4][3].pieceColor = "white";
-  console.log("board", board);
   const results = getOpenPositions(board[3][2], board);
   const expectedResults = [
     [2, 1],
@@ -269,6 +265,36 @@ test("expect white knight to have correct movement options after moving to [5,5]
     [4, 7],
     [7, 6],
     [6, 3],
+  ];
+  expectedResults.forEach((expected) => {
+    expect(results).toContainEqual(expected);
+  });
+  expect(results?.length).toBe(expectedResults.length);
+});
+
+test("expect white rook to have correct movement options after moving to [4,3]", () => {
+  let board = copyBoard(initialBoard);
+  board[4][3].piece = "rook";
+  board[4][3].pieceColor = "white";
+  board[7][7].piece = null;
+  board[7][7].pieceColor = "";
+
+  // Get the open positions for the white rook at [4,3]
+  // { rowIndex: 4, columnIndex: 4, pieceColor: "white", piece: "rook" },
+  const results = getOpenPositions(board[4][3], board);
+  console.log("rook test results", results);
+  const expectedResults = [
+    [4, 0],
+    [4, 1],
+    [4, 2],
+    [4, 4],
+    [4, 5],
+    [4, 6],
+    [4, 7],
+    [1, 3], // rook can capture black pawn
+    [2, 3],
+    [3, 3],
+    [5, 3],
   ];
   expectedResults.forEach((expected) => {
     expect(results).toContainEqual(expected);
