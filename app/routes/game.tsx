@@ -65,41 +65,43 @@ export default function GameBoard() {
     setSelectedCell(cell);
   }
   return (
-    <div className="p-4">
-      {board?.map((row, rowIndex) => {
-        return (
-          <div className="flex" key={rowIndex}>
-            {row.map((cell, columnIndex) => {
-              return (
-                <Cell
-                  rowIndex={rowIndex}
-                  columnIndex={columnIndex}
-                  pieceSrc={getPieceSrc(cell.pieceColor, cell.piece)}
-                  key={rowIndex.toString() + columnIndex.toString()}
-                  onClick={() =>
-                    onSelect({
-                      rowIndex,
-                      columnIndex,
-                      piece: cell.piece,
-                      pieceColor: cell.pieceColor,
-                    })
-                  }
-                  isSelected={
-                    openCells?.length
-                      ? openCells.some(
-                          (tuple) =>
-                            tuple[0] === rowIndex && tuple[1] === columnIndex,
-                        )
-                        ? true
+    <div className="p-4 flex items-center justify-center h-full bg-darkGrey">
+      <div>
+        {board?.map((row, rowIndex) => {
+          return (
+            <div className="flex" key={rowIndex}>
+              {row.map((cell, columnIndex) => {
+                return (
+                  <Cell
+                    rowIndex={rowIndex}
+                    columnIndex={columnIndex}
+                    pieceSrc={getPieceSrc(cell.pieceColor, cell.piece)}
+                    key={rowIndex.toString() + columnIndex.toString()}
+                    onClick={() =>
+                      onSelect({
+                        rowIndex,
+                        columnIndex,
+                        piece: cell.piece,
+                        pieceColor: cell.pieceColor,
+                      })
+                    }
+                    isSelected={
+                      openCells?.length
+                        ? openCells.some(
+                            (tuple) =>
+                              tuple[0] === rowIndex && tuple[1] === columnIndex,
+                          )
+                          ? true
+                          : false
                         : false
-                      : false
-                  }
-                />
-              );
-            })}
-          </div>
-        );
-      })}
+                    }
+                  />
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
       <div className="absolute bottom-4 left-4 right-0">
         Chess Icons By Cburnett - Own work{" "}
         <a

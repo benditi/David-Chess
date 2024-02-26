@@ -19,7 +19,7 @@ export default function Cell(props: CellProps) {
   return (
     <div
       className={twMerge(
-        "relative flex items-center justify-center border-gray-500 w-16 h-16",
+        "relative flex items-center justify-center border-gray-500 w-12 h-12 md:w-16 md:h-16",
         cellClass,
         isLeftColumn && rowIndex === 7 && "rounded-bl-sm",
         isRightColumn && rowIndex === 7 && "rounded-br-sm",

@@ -282,7 +282,6 @@ test("expect white rook to have correct movement options after moving to [4,3]",
   // Get the open positions for the white rook at [4,3]
   // { rowIndex: 4, columnIndex: 4, pieceColor: "white", piece: "rook" },
   const results = getOpenPositions(board[4][3], board);
-  console.log("rook test results", results);
   const expectedResults = [
     [4, 0],
     [4, 1],
@@ -310,9 +309,7 @@ test("expect white queen to have correct movement options after moving to [4,3]"
   board[7][3].pieceColor = "";
 
   // Get the open positions for the white queen at [4,3]
-
   const results = getOpenPositions(board[4][3], board);
-  console.log("queen test results", results);
   const expectedResults = [
     [1, 0],
     [1, 3],
@@ -331,6 +328,50 @@ test("expect white queen to have correct movement options after moving to [4,3]"
     [4, 6],
     [4, 7],
     [5, 2],
+    [5, 3],
+    [5, 4],
+  ];
+  expectedResults.forEach((expected) => {
+    expect(results).toContainEqual(expected);
+  });
+  expect(results?.length).toBe(expectedResults.length);
+});
+test("expect white queen to have correct movement options after moving to [4,4] and a couple of black and white moves", () => {
+  let board = copyBoard(initialBoard);
+  board[4][4].piece = "queen";
+  board[4][4].pieceColor = "white";
+  board[7][3].piece = null;
+  board[7][3].pieceColor = "";
+  board[5][5].piece = "knight";
+  board[5][5].pieceColor = "white";
+  board[7][6].piece = null;
+  board[7][6].pieceColor = "";
+  board[3][3].piece = "pawn";
+  board[3][3].pieceColor = "black";
+  board[1][3].piece = null;
+  board[1][3].pieceColor = "";
+  board[2][5].piece = "knight"; //this movement shouldn't interfere the queen
+  board[2][5].pieceColor = "black";
+  board[0][6].piece = null;
+  board[0][6].pieceColor = "";
+
+  // Get the open positions for the white queen at [4,4]
+  const results = getOpenPositions(board[4][4], board);
+  const expectedResults = [
+    [1, 4],
+    [1, 7], // capture black pawn
+    [2, 4],
+    [2, 6],
+    [3, 3], // capture black pawn
+    [3, 4],
+    [3, 5],
+    [4, 0],
+    [4, 1],
+    [4, 2],
+    [4, 3],
+    [4, 5],
+    [4, 6],
+    [4, 7],
     [5, 3],
     [5, 4],
   ];
