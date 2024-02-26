@@ -139,71 +139,7 @@ export function getOpenPositions(
     return positionsArray;
   }
   if (piece === "bishop") {
-    // bottom left
-    for (
-      let i = rowIndex - 1, j = columnIndex - 1;
-      i >= 0 && j >= 0;
-      i--, j--
-    ) {
-      if (board[i][j].piece) {
-        if (board[i][j].pieceColor !== pieceColor) {
-          positionsArray.push([i, j]);
-        }
-        break;
-      } else {
-        positionsArray.push([i, j]);
-      }
-    }
-    // bottom right
-    for (
-      let i = rowIndex - 1, j = columnIndex + 1;
-      i >= 0 && j <= 7;
-      i--, j++
-    ) {
-      console.log("bottom right i,j", i, j);
-      if (board[i][j].piece) {
-        if (board[i][j].pieceColor !== pieceColor) {
-          positionsArray.push([i, j]);
-        }
-        break;
-      } else {
-        positionsArray.push([i, j]);
-      }
-    }
-    // top left
-    if (rowIndex !== 7 && columnIndex !== 0) {
-      for (
-        let i = rowIndex + 1, j = columnIndex - 1;
-        i <= 7 && j >= 0;
-        i++, j--
-      ) {
-        if (board[i][j].piece) {
-          if (board[i][j].pieceColor !== pieceColor) {
-            positionsArray.push([i, j]);
-          }
-          break;
-        } else {
-          positionsArray.push([i, j]);
-        }
-      }
-    }
-    // top right
-    if (rowIndex !== 7 && columnIndex !== 7) {
-      for (
-        let i = rowIndex + 1, j = columnIndex + 1;
-        i <= 7 && j <= 7;
-        i++, j++
-      ) {
-        if (board[i][j].piece) {
-          if (board[i][j].pieceColor !== pieceColor) {
-            positionsArray.push([i, j]);
-          }
-          break;
-        } else {
-          positionsArray.push([i, j]);
-        }
-      }
-    }
+    positionsArray = _getBishopPositions({ cell, board });
     return positionsArray;
   }
   if (piece === "knight") {
@@ -238,50 +174,13 @@ export function getOpenPositions(
     return positionsArray;
   }
   if (piece === "rook") {
-    // down the file
-    for (let i = rowIndex - 1; i >= 0; i--) {
-      if (board[i][columnIndex].piece) {
-        if (board[i][columnIndex].pieceColor !== pieceColor) {
-          positionsArray.push([i, columnIndex]);
-        }
-        break;
-      } else {
-        positionsArray.push([i, columnIndex]);
-      }
-    }
-    // up the file
-    for (let i = rowIndex + 1; i <= 7; i++) {
-      if (board[i][columnIndex].piece) {
-        if (board[i][columnIndex].pieceColor !== pieceColor) {
-          positionsArray.push([i, columnIndex]);
-        }
-        break;
-      } else {
-        positionsArray.push([i, columnIndex]);
-      }
-    }
-    // right of file
-    for (let i = columnIndex + 1; i <= 7; i++) {
-      if (board[rowIndex][i].piece) {
-        if (board[rowIndex][i].pieceColor !== pieceColor) {
-          positionsArray.push([rowIndex, i]);
-        }
-        break;
-      } else {
-        positionsArray.push([rowIndex, i]);
-      }
-    }
-    // left of file
-    for (let i = columnIndex - 1; i >= 0; i--) {
-      if (board[rowIndex][i].piece) {
-        if (board[rowIndex][i].pieceColor !== pieceColor) {
-          positionsArray.push([rowIndex, i]);
-        }
-        break;
-      } else {
-        positionsArray.push([rowIndex, i]);
-      }
-    }
+    positionsArray = _getRookPositions({ cell, board });
+    return positionsArray;
+  }
+  if (piece === "queen") {
+    let rookPositions = _getRookPositions({ cell, board });
+    let bishoPositions = _getBishopPositions({ cell, board });
+    positionsArray = [...rookPositions, ...bishoPositions];
     return positionsArray;
   }
 }
@@ -301,4 +200,135 @@ export function movePiece(
   board[rowIndex][columnIndex].piece = "";
   board[rowIndex][columnIndex].pieceColor = "";
   return board;
+}
+
+function _getRookPositions(props: {
+  cell: {
+    rowIndex: number;
+    columnIndex: number;
+    piece: string | null;
+    pieceColor: PieceColor;
+  };
+  board: ChessBoard;
+}): PositionTuple[] {
+  let positionsArray: PositionTuple[] = [];
+  let { cell, board } = props;
+  let { rowIndex, columnIndex, pieceColor } = cell;
+  // down the file
+  for (let i = rowIndex - 1; i >= 0; i--) {
+    if (board[i][columnIndex].piece) {
+      if (board[i][columnIndex].pieceColor !== pieceColor) {
+        positionsArray.push([i, columnIndex]);
+      }
+      break;
+    } else {
+      positionsArray.push([i, columnIndex]);
+    }
+  }
+  // up the file
+  for (let i = rowIndex + 1; i <= 7; i++) {
+    if (board[i][columnIndex].piece) {
+      if (board[i][columnIndex].pieceColor !== pieceColor) {
+        positionsArray.push([i, columnIndex]);
+      }
+      break;
+    } else {
+      positionsArray.push([i, columnIndex]);
+    }
+  }
+  // right of file
+  for (let i = columnIndex + 1; i <= 7; i++) {
+    if (board[rowIndex][i].piece) {
+      if (board[rowIndex][i].pieceColor !== pieceColor) {
+        positionsArray.push([rowIndex, i]);
+      }
+      break;
+    } else {
+      positionsArray.push([rowIndex, i]);
+    }
+  }
+  // left of file
+  for (let i = columnIndex - 1; i >= 0; i--) {
+    if (board[rowIndex][i].piece) {
+      if (board[rowIndex][i].pieceColor !== pieceColor) {
+        positionsArray.push([rowIndex, i]);
+      }
+      break;
+    } else {
+      positionsArray.push([rowIndex, i]);
+    }
+  }
+  return positionsArray;
+}
+
+function _getBishopPositions(props: {
+  cell: {
+    rowIndex: number;
+    columnIndex: number;
+    piece: string | null;
+    pieceColor: PieceColor;
+  };
+  board: ChessBoard;
+}): PositionTuple[] {
+  let positionsArray: PositionTuple[] = [];
+  let { cell, board } = props;
+  let { rowIndex, columnIndex, pieceColor } = cell;
+  // bottom left
+  for (let i = rowIndex - 1, j = columnIndex - 1; i >= 0 && j >= 0; i--, j--) {
+    if (board[i][j].piece) {
+      if (board[i][j].pieceColor !== pieceColor) {
+        positionsArray.push([i, j]);
+      }
+      break;
+    } else {
+      positionsArray.push([i, j]);
+    }
+  }
+  // bottom right
+  for (let i = rowIndex - 1, j = columnIndex + 1; i >= 0 && j <= 7; i--, j++) {
+    console.log("bottom right i,j", i, j);
+    if (board[i][j].piece) {
+      if (board[i][j].pieceColor !== pieceColor) {
+        positionsArray.push([i, j]);
+      }
+      break;
+    } else {
+      positionsArray.push([i, j]);
+    }
+  }
+  // top left
+  if (rowIndex !== 7 && columnIndex !== 0) {
+    for (
+      let i = rowIndex + 1, j = columnIndex - 1;
+      i <= 7 && j >= 0;
+      i++, j--
+    ) {
+      if (board[i][j].piece) {
+        if (board[i][j].pieceColor !== pieceColor) {
+          positionsArray.push([i, j]);
+        }
+        break;
+      } else {
+        positionsArray.push([i, j]);
+      }
+    }
+  }
+  // top right
+  if (rowIndex !== 7 && columnIndex !== 7) {
+    for (
+      let i = rowIndex + 1, j = columnIndex + 1;
+      i <= 7 && j <= 7;
+      i++, j++
+    ) {
+      if (board[i][j].piece) {
+        if (board[i][j].pieceColor !== pieceColor) {
+          positionsArray.push([i, j]);
+        }
+        break;
+      } else {
+        positionsArray.push([i, j]);
+      }
+    }
+  }
+  return positionsArray;
 }

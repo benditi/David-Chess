@@ -301,3 +301,41 @@ test("expect white rook to have correct movement options after moving to [4,3]",
   });
   expect(results?.length).toBe(expectedResults.length);
 });
+
+test("expect white queen to have correct movement options after moving to [4,3]", () => {
+  let board = copyBoard(initialBoard);
+  board[4][3].piece = "queen";
+  board[4][3].pieceColor = "white";
+  board[7][3].piece = null;
+  board[7][3].pieceColor = "";
+
+  // Get the open positions for the white queen at [4,3]
+
+  const results = getOpenPositions(board[4][3], board);
+  console.log("queen test results", results);
+  const expectedResults = [
+    [1, 0],
+    [1, 3],
+    [1, 6],
+    [2, 1],
+    [2, 3],
+    [2, 5],
+    [3, 2],
+    [3, 3],
+    [3, 4],
+    [4, 0],
+    [4, 1],
+    [4, 2],
+    [4, 4],
+    [4, 5],
+    [4, 6],
+    [4, 7],
+    [5, 2],
+    [5, 3],
+    [5, 4],
+  ];
+  expectedResults.forEach((expected) => {
+    expect(results).toContainEqual(expected);
+  });
+  expect(results?.length).toBe(expectedResults.length);
+});

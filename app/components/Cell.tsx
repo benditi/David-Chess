@@ -1,7 +1,4 @@
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { twMerge } from "tailwind-merge";
-
-import BlackQueen from "~/assets/images/Chess_rdt45.svg";
 
 type CellProps = {
   columnIndex: number;
@@ -28,6 +25,7 @@ export default function Cell(props: CellProps) {
         isRightColumn && rowIndex === 7 && "rounded-br-sm",
         isLeftColumn && rowIndex === 0 && "rounded-tl-sm",
         isRightColumn && rowIndex === 0 && "rounded-tr-sm",
+        pieceSrc || (isSelected && "hover:cursor-pointer"),
       )}
       onClick={onClick}
     >
