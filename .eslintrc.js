@@ -85,7 +85,7 @@ module.exports = {
           },
         ],
         "prefer-const": "off",
-        "consistent-type-definitions": "off",
+        "@typescript-eslint/consistent-type-definitions": "off",
       },
     },
 

@@ -107,7 +107,7 @@ export default function GameBoard() {
         <a
           href="//commons.wikimedia.org/wiki/User:Cburnett"
           title="User:Cburnett"
-        />{" "}
+        />
         <span className="int-own-work" lang="en"></span>{" "}
         <a
           href="http://creativecommons.org/licenses/by-sa/3.0/"
