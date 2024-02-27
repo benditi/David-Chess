@@ -193,7 +193,7 @@ export function getOpenPositions(
     return positionsArray;
   }
   if (piece === "king") {
-    return _getOpenNeighbors({ cell, board });
+    return _getKingPositions({ cell, board });
   }
 }
 
@@ -329,7 +329,7 @@ function _getBishopPositions(props: PositionProps): PositionTuple[] {
   return positionsArray;
 }
 
-function _getOpenNeighbors(props: PositionProps): PositionTuple[] {
+function _getKingPositions(props: PositionProps): PositionTuple[] {
   let positionsArray: PositionTuple[] = [];
   let { cell, board } = props;
   let { rowIndex, columnIndex, pieceColor } = cell;

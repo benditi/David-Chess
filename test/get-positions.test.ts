@@ -406,3 +406,35 @@ test("expect white king to have correct movement options after moving to [4,4] "
   });
   expect(results?.length).toBe(expectedResults.length);
 });
+
+test("expect white king to have correct movement options after moving to [4,6] and some pawn movements ", () => {
+  let board = copyBoard(initialBoard);
+  board[4][6].piece = "king";
+  board[4][6].pieceColor = "white";
+  board[7][4].piece = null;
+  board[7][4].pieceColor = "";
+  board[3][6].piece = "pawn";
+  board[3][6].pieceColor = "black";
+  board[1][6].piece = null;
+  board[1][6].pieceColor = "";
+  board[5][5].piece = "pawn";
+  board[5][5].pieceColor = "white";
+  board[5][6].piece = null;
+  board[5][6].pieceColor = "";
+
+  // Get the open positions for the white king at [4,6]
+  const results = getOpenPositions(board[4][6], board);
+  const expectedResults = [
+    [3, 5],
+    [3, 6], //can capture black pawn
+    [3, 7],
+    [4, 5], //TBD- this position should be removed after checking check threat
+    [4, 7], //TBD- this position should be removed after checking check threat
+    [5, 6],
+    [5, 7],
+  ];
+  expectedResults.forEach((expected) => {
+    expect(results).toContainEqual(expected);
+  });
+  expect(results?.length).toBe(expectedResults.length);
+});
