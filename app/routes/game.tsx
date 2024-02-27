@@ -104,10 +104,6 @@ export default function GameBoard() {
       </div>
       <div className="absolute bottom-4 left-4 right-0">
         Chess Icons By Cburnett - Own work{" "}
-        <a
-          href="//commons.wikimedia.org/wiki/User:Cburnett"
-          title="User:Cburnett"
-        />
         <span className="int-own-work" lang="en"></span>{" "}
         <a
           href="http://creativecommons.org/licenses/by-sa/3.0/"

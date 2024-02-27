@@ -28,6 +28,9 @@ export default function Cell(props: CellProps) {
         pieceSrc || (isSelected && "hover:cursor-pointer"),
       )}
       onClick={onClick}
+      onKeyUp={onClick}
+      role="button"
+      tabIndex={rowIndex}
     >
       {pieceSrc ? <img src={pieceSrc} alt="" className="w-8" /> : null}
       {isSelected ? (
