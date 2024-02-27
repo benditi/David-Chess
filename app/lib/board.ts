@@ -1,6 +1,16 @@
 import { BoardCell, ChessBoard, PieceColor } from "~/routes/game";
 export type PositionTuple = [number, number];
 
+type PositionProps = {
+  cell: {
+    rowIndex: number;
+    columnIndex: number;
+    piece: string | null;
+    pieceColor: PieceColor;
+  };
+  board: ChessBoard;
+};
+
 export function buildBoard() {
   let startBoard: ChessBoard = Array.from(Array(8).keys()).map(
     (row, rowIndex) =>
@@ -174,14 +184,16 @@ export function getOpenPositions(
     return positionsArray;
   }
   if (piece === "rook") {
-    positionsArray = _getRookPositions({ cell, board });
-    return positionsArray;
+    return _getRookPositions({ cell, board });
   }
   if (piece === "queen") {
     let rookPositions = _getRookPositions({ cell, board });
     let bishoPositions = _getBishopPositions({ cell, board });
     positionsArray = [...rookPositions, ...bishoPositions];
     return positionsArray;
+  }
+  if (piece === "king") {
+    return _getOpenNeighbors({ cell, board });
   }
 }
 
@@ -202,15 +214,7 @@ export function movePiece(
   return board;
 }
 
-function _getRookPositions(props: {
-  cell: {
-    rowIndex: number;
-    columnIndex: number;
-    piece: string | null;
-    pieceColor: PieceColor;
-  };
-  board: ChessBoard;
-}): PositionTuple[] {
+function _getRookPositions(props: PositionProps): PositionTuple[] {
   let positionsArray: PositionTuple[] = [];
   let { cell, board } = props;
   let { rowIndex, columnIndex, pieceColor } = cell;
@@ -261,15 +265,7 @@ function _getRookPositions(props: {
   return positionsArray;
 }
 
-function _getBishopPositions(props: {
-  cell: {
-    rowIndex: number;
-    columnIndex: number;
-    piece: string | null;
-    pieceColor: PieceColor;
-  };
-  board: ChessBoard;
-}): PositionTuple[] {
+function _getBishopPositions(props: PositionProps): PositionTuple[] {
   let positionsArray: PositionTuple[] = [];
   let { cell, board } = props;
   let { rowIndex, columnIndex, pieceColor } = cell;
@@ -326,6 +322,26 @@ function _getBishopPositions(props: {
         }
         break;
       } else {
+        positionsArray.push([i, j]);
+      }
+    }
+  }
+  return positionsArray;
+}
+
+function _getOpenNeighbors(props: PositionProps): PositionTuple[] {
+  let positionsArray: PositionTuple[] = [];
+  let { cell, board } = props;
+  let { rowIndex, columnIndex, pieceColor } = cell;
+  let i = rowIndex === 0 ? 0 : rowIndex - 1;
+
+  for (; i < rowIndex + 2 && i < 8; i++) {
+    let j = columnIndex === 0 ? 0 : columnIndex - 1;
+    for (; j < columnIndex + 2 && j < 8; j++) {
+      if (i === rowIndex && j === columnIndex) {
+        continue;
+      }
+      if (!board[i][j].piece || board[i][j].pieceColor !== pieceColor) {
         positionsArray.push([i, j]);
       }
     }

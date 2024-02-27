@@ -336,6 +336,7 @@ test("expect white queen to have correct movement options after moving to [4,3]"
   });
   expect(results?.length).toBe(expectedResults.length);
 });
+
 test("expect white queen to have correct movement options after moving to [4,4] and a couple of black and white moves", () => {
   let board = copyBoard(initialBoard);
   board[4][4].piece = "queen";
@@ -374,6 +375,31 @@ test("expect white queen to have correct movement options after moving to [4,4] 
     [4, 7],
     [5, 3],
     [5, 4],
+  ];
+  expectedResults.forEach((expected) => {
+    expect(results).toContainEqual(expected);
+  });
+  expect(results?.length).toBe(expectedResults.length);
+});
+
+test("expect white king to have correct movement options after moving to [4,4] ", () => {
+  let board = copyBoard(initialBoard);
+  board[4][4].piece = "king";
+  board[4][4].pieceColor = "white";
+  board[7][4].piece = null;
+  board[7][4].pieceColor = "";
+
+  // Get the open positions for the white king at [4,4]
+  const results = getOpenPositions(board[4][4], board);
+  const expectedResults = [
+    [3, 3],
+    [3, 4],
+    [3, 5],
+    [4, 3],
+    [4, 5],
+    [5, 3],
+    [5, 4],
+    [5, 5],
   ];
   expectedResults.forEach((expected) => {
     expect(results).toContainEqual(expected);
