@@ -10,9 +10,9 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import { useState } from "react";
+
 import { AppContext } from "~/lib/AppContext";
 import { ContextUser } from "~/routes/context-form";
-
 import { getUser } from "~/session.server";
 import stylesheet from "~/tailwind.css";
 

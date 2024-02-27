@@ -1,6 +1,7 @@
 import { Link } from "@remix-run/react";
-import { FormEvent, useContext, useState } from "react";
-import { AppContext, useUserConext as useUserContext } from "~/lib/AppContext";
+import { FormEvent } from "react";
+
+import { useUserConext as useUserContext } from "~/lib/AppContext";
 
 export type ContextUser = {
   givenName: string | null;
