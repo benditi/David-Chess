@@ -54,7 +54,6 @@ module.exports = {
 
     // Typescript
     {
-      "prefer-const": "off",
       files: ["**/*.{ts,tsx}"],
       plugins: ["@typescript-eslint", "import"],
       parser: "@typescript-eslint/parser",
@@ -85,6 +84,8 @@ module.exports = {
             "newlines-between": "always",
           },
         ],
+        "prefer-const": "off",
+        "consistent-type-definitions": "off",
       },
     },
 

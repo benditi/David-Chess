@@ -30,7 +30,7 @@ export default function Cell(props: CellProps) {
       onClick={onClick}
     >
       {pieceSrc ? <img src={pieceSrc} alt="" className="w-8" /> : null}
-      {isSelected && (
+      {isSelected ? (
         <div
           className={
             pieceSrc
@@ -38,7 +38,7 @@ export default function Cell(props: CellProps) {
               : "p-2 bg-openGrey rounded-full"
           }
         ></div>
-      )}
+      ) : null}
     </div>
   );
 }

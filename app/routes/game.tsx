@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
+
 import Cell from "~/components/Cell";
-import { useUserConext } from "~/lib/AppContext";
 import {
   PositionTuple,
   buildBoard,
