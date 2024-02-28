@@ -12,8 +12,6 @@ export default function DavidsForm() {
   let { user, setData } = useUserContext();
   let handleSubmit = (ev: FormEvent) => {
     ev.preventDefault();
-    console.log("ev", ev);
-    console.log("user", user);
   };
   return (
     <div className="p-4">
