@@ -269,7 +269,7 @@ function _getBishopPositions(props: PositionProps): PositionTuple[] {
   let positionsArray: PositionTuple[] = [];
   let { cell, board } = props;
   let { rowIndex, columnIndex, pieceColor } = cell;
-  // bottom left
+  // top left
   for (let i = rowIndex - 1, j = columnIndex - 1; i >= 0 && j >= 0; i--, j--) {
     if (board[i][j].piece) {
       if (board[i][j].pieceColor !== pieceColor) {
@@ -280,9 +280,8 @@ function _getBishopPositions(props: PositionProps): PositionTuple[] {
       positionsArray.push([i, j]);
     }
   }
-  // bottom right
+  // top right
   for (let i = rowIndex - 1, j = columnIndex + 1; i >= 0 && j <= 7; i--, j++) {
-    console.log("bottom right i,j", i, j);
     if (board[i][j].piece) {
       if (board[i][j].pieceColor !== pieceColor) {
         positionsArray.push([i, j]);
@@ -292,7 +291,7 @@ function _getBishopPositions(props: PositionProps): PositionTuple[] {
       positionsArray.push([i, j]);
     }
   }
-  // top left
+  // bottom left
   if (rowIndex !== 7 && columnIndex !== 0) {
     for (
       let i = rowIndex + 1, j = columnIndex - 1;
@@ -309,7 +308,7 @@ function _getBishopPositions(props: PositionProps): PositionTuple[] {
       }
     }
   }
-  // top right
+  // bottom right
   if (rowIndex !== 7 && columnIndex !== 7) {
     for (
       let i = rowIndex + 1, j = columnIndex + 1;
@@ -347,4 +346,132 @@ function _getKingPositions(props: PositionProps): PositionTuple[] {
     }
   }
   return positionsArray;
+}
+
+/**
+ * A function checking whether the chosen king is under chess
+ * @param props  board- the state ot the board, cell: the cell in which the selected king is
+ * @returns a boolean noting whether the king is under threat (chess)
+ */
+
+export function checkForCheckThreat(props: PositionProps): boolean {
+  let { cell, board } = props;
+
+  let { rowIndex, columnIndex, pieceColor, piece } = cell;
+  if (piece !== "king") {
+    throw Error("checkForCheckThreat is not check on the k");
+  }
+  // checking diagnols
+  // top left
+  for (let i = rowIndex - 1, j = columnIndex - 1; i >= 0 && j >= 0; i--, j--) {
+    let currentCell = board[i][j];
+    if (currentCell.piece) {
+      if (currentCell.pieceColor === pieceColor) {
+        break;
+      }
+      // checking black pawn threat against black king
+      else if (
+        i === rowIndex - 1 &&
+        j === columnIndex - 1 &&
+        currentCell.piece === "pawn" &&
+        currentCell.pieceColor === "black"
+      ) {
+        return true;
+      } else if (
+        currentCell.piece === "queen" ||
+        currentCell.piece === "bishop"
+      ) {
+        return true;
+      }
+      break;
+    }
+  }
+  // top right
+  for (let i = rowIndex - 1, j = columnIndex + 1; i >= 0 && j <= 7; i--, j++) {
+    let currentCell = board[i][j];
+    if (currentCell.piece) {
+      if (currentCell.pieceColor === pieceColor) {
+        break;
+      }
+      // checking black pawn threat against black king
+      else if (
+        i === rowIndex - 1 &&
+        j === columnIndex + 1 &&
+        currentCell.piece === "pawn" &&
+        currentCell.pieceColor === "black"
+      ) {
+        return true;
+      } else if (
+        currentCell.piece === "queen" ||
+        currentCell.piece === "bishop"
+      ) {
+        return true;
+      }
+      //case any other piece is blocking diagnal, no threat
+      break;
+    }
+  }
+  // bottom left
+  if (rowIndex !== 7 && columnIndex !== 0) {
+    for (
+      let i = rowIndex + 1, j = columnIndex - 1;
+      i <= 7 && j >= 0;
+      i++, j--
+    ) {
+      let currentCell = board[i][j];
+      if (currentCell.piece) {
+        if (currentCell.pieceColor === pieceColor) {
+          break;
+        }
+        // checking white pawn threat against black king
+        else if (
+          i === rowIndex + 1 &&
+          j === columnIndex - 1 &&
+          currentCell.piece === "pawn" &&
+          currentCell.pieceColor === "white"
+        ) {
+          return true;
+        } else if (
+          currentCell.piece === "queen" ||
+          currentCell.piece === "bishop"
+        ) {
+          return true;
+        }
+      }
+      break;
+    }
+  }
+  // bottom right
+  if (rowIndex !== 7 && columnIndex !== 7) {
+    for (
+      let i = rowIndex + 1, j = columnIndex + 1;
+      i <= 7 && j <= 7;
+      i++, j++
+    ) {
+      let currentCell = board[i][j];
+      if (currentCell.piece) {
+        if (currentCell.pieceColor === pieceColor) {
+          break;
+        }
+        // checking white pawn threat against black king
+        else if (
+          i === rowIndex + 1 &&
+          j === columnIndex + 1 &&
+          currentCell.piece === "pawn" &&
+          currentCell.pieceColor === "white"
+        ) {
+          return true;
+        } else if (
+          currentCell.piece === "queen" ||
+          currentCell.piece === "bishop"
+        ) {
+          return true;
+        }
+      }
+      break;
+    }
+  }
+
+  // if no threat detected returning false
+  return false;
 }
