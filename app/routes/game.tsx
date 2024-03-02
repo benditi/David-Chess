@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Cell from "~/components/Cell";
 import {
@@ -24,11 +24,13 @@ export default function GameBoard() {
     undefined,
   );
   let [seletedCell, setSelectedCell] = useState<BoardCell | null>(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     let startBoard = buildBoard();
     setBoard(startBoard);
   }, []);
+
   function onSelect(cell: {
     rowIndex: number;
     columnIndex: number;
@@ -60,13 +62,39 @@ export default function GameBoard() {
       return;
     }
     let openPositions = getOpenPositions(cell, board);
-    console.log("openPositions", openPositions);
     setOpenCells(openPositions);
     setSelectedCell(cell);
   }
+  // event delegation of cell click events
+  let handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    // Ensure that the clicked element is a cell
+    let target = event.target as HTMLElement | null;
+    while (target && target !== containerRef.current) {
+      if (target.classList.contains("cell")) {
+        const rowIndex = parseInt(target.getAttribute("data-row") as string);
+        const columnIndex = parseInt(
+          target.getAttribute("data-column") as string,
+        );
+        const piece = target.getAttribute("data-piece");
+        const pieceColor = target.getAttribute(
+          "data-piece-color",
+        ) as PieceColor;
+        onSelect({ rowIndex, columnIndex, piece, pieceColor });
+        break;
+      }
+      target = target.parentElement;
+    }
+  };
+
   return (
     <div className="p-4 flex items-center justify-center h-full bg-darkGrey">
-      <div>
+      <div
+        onClick={handleClick}
+        onKeyUp={() => console.log(`clicking on cell`)}
+        role="button"
+        tabIndex={0}
+        ref={containerRef}
+      >
         {board?.map((row, rowIndex) => {
           return (
             <div className="flex" key={rowIndex}>
@@ -75,16 +103,10 @@ export default function GameBoard() {
                   <Cell
                     rowIndex={rowIndex}
                     columnIndex={columnIndex}
+                    piece={cell.piece}
+                    pieceColor={cell.pieceColor}
                     pieceSrc={getPieceSrc(cell.pieceColor, cell.piece)}
                     key={rowIndex.toString() + columnIndex.toString()}
-                    onClick={() =>
-                      onSelect({
-                        rowIndex,
-                        columnIndex,
-                        piece: cell.piece,
-                        pieceColor: cell.pieceColor,
-                      })
-                    }
                     isSelected={
                       openCells?.length
                         ? openCells.some(

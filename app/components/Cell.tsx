@@ -1,25 +1,27 @@
 import { twMerge } from "tailwind-merge";
 
+import { PieceColor } from "~/routes/game";
+
 type CellProps = {
   columnIndex: number;
   rowIndex: number;
   pieceSrc: string;
-  onClick: () => void;
   isSelected: boolean;
+  piece: string | null;
+  pieceColor: PieceColor;
 };
 export default function Cell(props: CellProps) {
-  let { columnIndex, rowIndex, pieceSrc, onClick, isSelected } = props;
+  let { columnIndex, rowIndex, pieceSrc, isSelected, piece, pieceColor } =
+    props;
   let cellClass =
     (columnIndex + rowIndex) % 2 === 0 ? "bg-white_cell" : "bg-black_cell";
   let isLeftColumn = columnIndex === 0;
   let isRightColumn = columnIndex === 7;
-  if (isSelected) {
-    console.log("cell selected!");
-  }
+
   return (
     <div
       className={twMerge(
-        "relative flex items-center justify-center border-gray-500 w-12 h-12 md:w-16 md:h-16",
+        "cell relative flex items-center justify-center border-gray-500 w-12 h-12 md:w-16 md:h-16",
         cellClass,
         isLeftColumn && rowIndex === 7 && "rounded-bl-sm",
         isRightColumn && rowIndex === 7 && "rounded-br-sm",
@@ -27,10 +29,12 @@ export default function Cell(props: CellProps) {
         isRightColumn && rowIndex === 0 && "rounded-tr-sm",
         pieceSrc || (isSelected && "hover:cursor-pointer"),
       )}
-      onClick={onClick}
-      onKeyUp={onClick}
       role="button"
       tabIndex={rowIndex}
+      data-row={rowIndex}
+      data-column={columnIndex}
+      data-piece={piece}
+      data-piece-color={pieceColor}
     >
       {pieceSrc ? <img src={pieceSrc} alt="" className="w-8" /> : null}
       {isSelected ? (
