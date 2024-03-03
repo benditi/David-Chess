@@ -1,13 +1,8 @@
-import { BoardCell, ChessBoard, PieceColor } from "~/routes/game";
+import { BoardCell, ChessBoard } from "~/routes/game";
 export type PositionTuple = [number, number];
 
 type PositionProps = {
-  cell: {
-    rowIndex: number;
-    columnIndex: number;
-    piece: string | null;
-    pieceColor: PieceColor;
-  };
+  cell: BoardCell;
   board: ChessBoard;
 };
 
@@ -80,15 +75,7 @@ export function buildBoard() {
  * @returns an array of tuples with all the legal cells that are open for the player: [ [1,2]-[rowIndex, columnIndex] ]
  */
 
-export function getOpenPositions(
-  cell: {
-    rowIndex: number;
-    columnIndex: number;
-    piece: string | null;
-    pieceColor: PieceColor;
-  },
-  board: ChessBoard | null,
-) {
+export function getOpenPositions(cell: BoardCell, board: ChessBoard | null) {
   let { pieceColor, piece, rowIndex, columnIndex } = cell;
   let positionsArray: PositionTuple[] = [];
   if (!board) {
@@ -110,7 +97,7 @@ export function getOpenPositions(
     // checking diagnols
     if (columnIndex > 0) {
       let leftDiagnolPiece =
-        board[rowIndex + rowMovementDirection][columnIndex - 1].piece;
+        board[rowIndex + rowMovementDirection][columnIndex - 1]?.piece;
       let leftDiagnolOppositeColor =
         board[rowIndex + rowMovementDirection][columnIndex - 1].pieceColor !==
         pieceColor;
@@ -118,9 +105,9 @@ export function getOpenPositions(
         positionsArray.push([rowIndex + rowMovementDirection, columnIndex - 1]);
       }
       let rightDiagnolPiece =
-        board[rowIndex + rowMovementDirection][columnIndex + 1].piece;
+        board[rowIndex + rowMovementDirection][columnIndex + 1]?.piece;
       let rightDiagnolOppositeColor =
-        board[rowIndex + rowMovementDirection][columnIndex + 1].pieceColor !==
+        board[rowIndex + rowMovementDirection][columnIndex + 1]?.pieceColor !==
         pieceColor;
       if (rightDiagnolPiece && rightDiagnolOppositeColor) {
         positionsArray.push([rowIndex + rowMovementDirection, columnIndex + 1]);
@@ -129,7 +116,7 @@ export function getOpenPositions(
 
     //
     let isBlockedNext =
-      board[rowIndex + rowMovementDirection][columnIndex].piece;
+      board[rowIndex + rowMovementDirection][columnIndex]?.piece;
     if (isBlockedNext) {
       return positionsArray;
     }
@@ -140,7 +127,7 @@ export function getOpenPositions(
       (rowIndex === 6 && pieceColor === "white")
     ) {
       let twoStepsIdx = rowIndex + 2 * rowMovementDirection;
-      let isBlockedSecond = board[twoStepsIdx][columnIndex].piece;
+      let isBlockedSecond = board[twoStepsIdx][columnIndex]?.piece;
       if (isBlockedSecond) {
         return positionsArray;
       }
@@ -165,7 +152,7 @@ export function getOpenPositions(
       let yIndex = columnIndex - j;
       if (0 <= yIndex && yIndex <= 7) {
         if (
-          !board[xIndex][yIndex].piece ||
+          !board[xIndex][yIndex]?.piece ||
           board[xIndex][yIndex].pieceColor !== pieceColor
         ) {
           positionsArray.push([xIndex, yIndex]);
@@ -174,7 +161,7 @@ export function getOpenPositions(
       yIndex = columnIndex + j;
       if (yIndex <= 7) {
         if (
-          !board[xIndex][yIndex].piece ||
+          !board[xIndex][yIndex]?.piece ||
           board[xIndex][yIndex].pieceColor !== pieceColor
         ) {
           positionsArray.push([xIndex, yIndex]);
@@ -350,13 +337,12 @@ function _getKingPositions(props: PositionProps): PositionTuple[] {
 
 /**
  * A function checking whether the chosen king is under chess
- * @param props  board- the state ot the board, cell: the cell in which the selected king is
+ * @param props board- the state ot the board, cell: the cell in which the selected king is
  * @returns a boolean noting whether the king is under threat (chess)
  */
 
 export function checkForCheckThreat(props: PositionProps): boolean {
   let { cell, board } = props;
-
   let { rowIndex, columnIndex, pieceColor, piece } = cell;
   if (piece !== "king") {
     throw Error("checkForCheckThreat is not check on the k");
@@ -534,6 +520,83 @@ export function checkForCheckThreat(props: PositionProps): boolean {
       break;
     }
   }
+  //
+
+  // check knight threat
+  for (let i = -2; i <= 2; i++) {
+    if (i === 0) {
+      continue;
+    }
+    let j = Math.abs(i) === 2 ? 1 : 2;
+    let xIndex = rowIndex + i;
+    if (xIndex < 0 || xIndex > 7) {
+      continue;
+    }
+    let yIndex = columnIndex - j;
+
+    if (0 <= yIndex && yIndex <= 7) {
+      if (
+        board[xIndex][yIndex].piece === "knight" &&
+        board[xIndex][yIndex].pieceColor !== pieceColor
+      ) {
+        return true;
+      }
+    }
+    yIndex = columnIndex + j;
+    if (yIndex <= 7) {
+      if (
+        board[xIndex][yIndex].piece === "knight" &&
+        board[xIndex][yIndex].pieceColor !== pieceColor
+      ) {
+        return true;
+      }
+    }
+  }
+  //
   // if no threat detected returning false
   return false;
+}
+/**
+ * a function that is trigered after a chess on the king which returns an array with all the legal moves the player can make.
+ * @param props  board- the state ot the board, cell: the cell in which the selected king is threatened
+ * @returns an array containing all movable pieces with all of thier legal positions. Empty array is returned if checkmate.
+ */
+export function getChessOpenPositions(
+  props: PositionProps,
+): { cell: BoardCell; positions: PositionTuple[] | undefined }[] {
+  let { cell, board } = props;
+  let { pieceColor, piece } = cell;
+  if (piece !== "king") {
+    throw Error("checkForCheckThreat is not check on the k");
+  }
+  let defenderPieces = board.flatMap((row) =>
+    row.filter((cell) => cell.pieceColor === pieceColor),
+  );
+  // creating every open position for each piece and checking if there is still a check threat in the new position
+  let results = defenderPieces
+    .map((piece) => ({
+      cell: piece,
+      positions: getOpenPositions(piece, board),
+    }))
+    .map((piece) => ({
+      ...piece,
+      positions: piece.positions?.filter((position) => {
+        let newBoard = copyBoard(board);
+        movePiece(
+          piece.cell,
+          { rowIndex: position[0], columnIndex: position[1] },
+          newBoard,
+        );
+        // added case moved piece is the king himself
+        return !checkForCheckThreat({
+          cell:
+            piece.cell.piece === "king"
+              ? newBoard[position[0]][position[1]]
+              : cell, //the king cell
+          board: newBoard,
+        });
+      }),
+    }))
+    .filter((piece) => piece.positions?.length);
+  return results;
 }

@@ -146,3 +146,66 @@ test("expect white king to be threatend by black rook (straight right threat)", 
   // Expected result: The white king should be threatened by the black rook
   expect(isWhiteThreatened).toBe(true);
 });
+test("expect white king to not be threatend by black rook", () => {
+  // Build the initial board
+  let board = copyBoard(initialBoard);
+
+  board[1][0].piece = null;
+  board[1][0].pieceColor = "";
+  board[3][0].piece = "pawn";
+  board[3][0].pieceColor = "black";
+  board[0][0].piece = null;
+  board[0][0].pieceColor = "";
+  board[5][1].piece = "rook";
+  board[5][1].pieceColor = "black";
+
+  // white moves
+  board[6][4].piece = null;
+  board[6][4].pieceColor = "";
+  board[4][4].piece = "pawn";
+  board[4][4].pieceColor = "white";
+  board[6][3].piece = null;
+  board[6][3].pieceColor = "";
+  board[4][3].piece = "pawn";
+  board[4][3].pieceColor = "white";
+  board[7][4].piece = null;
+  board[7][4].pieceColor = "";
+  board[6][4].piece = "king";
+  board[6][4].pieceColor = "white";
+  // Check if the white king at [6,4] is threatened
+  const isWhiteThreatened = checkForCheckThreat({
+    cell: board[6][4],
+    board,
+  });
+
+  // Expected result: The white king should not be threatened by the black rook
+  expect(isWhiteThreatened).toBe(false);
+});
+test("expect black king to be threatend by white knight", () => {
+  // Build the initial board
+  let board = copyBoard(initialBoard);
+
+  board[1][4].piece = null;
+  board[1][4].pieceColor = "";
+  board[3][4].piece = "pawn";
+  board[3][4].pieceColor = "black";
+  board[1][5].piece = null;
+  board[1][5].pieceColor = "";
+  board[2][5].piece = "pawn";
+  board[2][5].pieceColor = "black";
+
+  // white moves (3 moves)
+  board[7][1].piece = null;
+  board[7][1].pieceColor = "";
+  board[1][2].piece = "knight";
+  board[1][2].pieceColor = "white";
+
+  // Check if the black king at [0,4] is threatened
+  const isWhiteThreatened = checkForCheckThreat({
+    cell: board[0][4],
+    board,
+  });
+
+  // Expected result: The black king should be threatened by the white knight
+  expect(isWhiteThreatened).toBe(true);
+});
