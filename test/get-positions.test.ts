@@ -44,9 +44,9 @@ test("expect pawn on b to have positions: [2,1] when [3,1] is occupied", () => {
 let thirdBoard = copyBoard(initialBoard);
 thirdBoard[3][1].piece = "pawn";
 thirdBoard[3][1].pieceColor = "white";
-thirdBoard[6][1].piece = "";
+thirdBoard[6][1].piece = null;
 thirdBoard[6][1].pieceColor = "";
-thirdBoard[6][2].piece = "";
+thirdBoard[6][2].piece = null;
 thirdBoard[6][2].pieceColor = "";
 thirdBoard[2][0].piece = "pawn";
 thirdBoard[2][0].pieceColor = "white";
@@ -154,11 +154,11 @@ test("expect black's bishop (white diagnol) on [3,3] to have diagonal movement o
 
 test("expect black's bishop (black diagnol) on [3,2] to have some diagonal movement options blocked by white pawn", () => {
   let board = copyBoard(initialBoard);
-  board[5][0].piece = ""; // Move black bishop
+  board[5][0].piece = null; // Move black bishop
   board[5][0].pieceColor = "";
   board[3][2].piece = "bishop"; // Place a black bishop
   board[3][2].pieceColor = "black";
-  board[6][3].piece = ""; // Move white pawn
+  board[6][3].piece = null; // Move white pawn
   board[6][3].pieceColor = "";
   board[4][3].piece = "pawn"; // Place a white pawn
   board[4][3].pieceColor = "white";
@@ -181,11 +181,11 @@ test("expect bishop at corner to have diagonal movement options after removing b
   board[0][0].piece = "bishop"; // Place a bishop at the corner
   board[0][0].pieceColor = "white"; // Ensure it's a white bishop
   // free diagnol from pieces
-  board[1][1].piece = "";
+  board[1][1].piece = null;
   board[1][1].pieceColor = "";
-  board[6][6].piece = "";
+  board[6][6].piece = null;
   board[6][6].pieceColor = "";
-  board[7][7].piece = "";
+  board[7][7].piece = null;
   board[7][7].pieceColor = "";
   const results = getOpenPositions(
     { rowIndex: 0, columnIndex: 0, pieceColor: "white", piece: "bishop" },

@@ -209,7 +209,7 @@ export function movePiece(
   let { rowIndex, columnIndex, piece, pieceColor } = cell;
   board[destination.rowIndex][destination.columnIndex].piece = piece;
   board[destination.rowIndex][destination.columnIndex].pieceColor = pieceColor;
-  board[rowIndex][columnIndex].piece = "";
+  board[rowIndex][columnIndex].piece = null;
   board[rowIndex][columnIndex].pieceColor = "";
   return board;
 }
@@ -471,7 +471,69 @@ export function checkForCheckThreat(props: PositionProps): boolean {
       break;
     }
   }
+  //
+  // checking straight directions
+  // down the file
+  for (let i = rowIndex - 1; i >= 0; i--) {
+    let currentCell = board[i][columnIndex];
+    if (currentCell.piece) {
+      if (currentCell.pieceColor === pieceColor) {
+        break;
+      } else if (
+        currentCell.piece === "rook" ||
+        currentCell.piece === "queen"
+      ) {
+        return true;
+      }
+      break;
+    }
+  }
+  // up the file
+  for (let i = rowIndex + 1; i <= 7; i++) {
+    let currentCell = board[i][columnIndex];
 
+    if (currentCell.piece) {
+      if (currentCell.pieceColor === pieceColor) {
+        break;
+      } else if (
+        currentCell.piece === "rook" ||
+        currentCell.piece === "queen"
+      ) {
+        return true;
+      }
+      break;
+    }
+  }
+  // right of file
+  for (let i = columnIndex + 1; i <= 7; i++) {
+    let currentCell = board[rowIndex][i];
+    if (currentCell.piece) {
+      if (currentCell.pieceColor === pieceColor) {
+        break;
+      } else if (
+        currentCell.piece === "rook" ||
+        currentCell.piece === "queen"
+      ) {
+        return true;
+      }
+      break;
+    }
+  }
+  // left of file
+  for (let i = columnIndex - 1; i >= 0; i--) {
+    let currentCell = board[rowIndex][i];
+    if (currentCell.piece) {
+      if (currentCell.pieceColor === pieceColor) {
+        break;
+      } else if (
+        currentCell.piece === "rook" ||
+        currentCell.piece === "queen"
+      ) {
+        return true;
+      }
+      break;
+    }
+  }
   // if no threat detected returning false
   return false;
 }

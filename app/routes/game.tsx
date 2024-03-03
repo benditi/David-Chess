@@ -10,10 +10,17 @@ import {
 import { getPieceSrc } from "~/lib/pieces";
 
 export type PieceColor = "white" | "black" | "";
+export type PieceType =
+  | "pawn"
+  | "rook"
+  | "knight"
+  | "bishop"
+  | "queen"
+  | "king";
 export type BoardCell = {
   rowIndex: number;
   columnIndex: number;
-  piece: string | null;
+  piece: PieceType | null;
   pieceColor: PieceColor;
 };
 export type ChessBoard = BoardCell[][];
@@ -34,7 +41,7 @@ export default function GameBoard() {
   function onSelect(cell: {
     rowIndex: number;
     columnIndex: number;
-    piece: string | null;
+    piece: PieceType | null;
     pieceColor: PieceColor;
   }) {
     // case clicking allready selected cell
@@ -75,7 +82,7 @@ export default function GameBoard() {
         const columnIndex = parseInt(
           target.getAttribute("data-column") as string,
         );
-        const piece = target.getAttribute("data-piece");
+        const piece = target.getAttribute("data-piece") as PieceType;
         const pieceColor = target.getAttribute(
           "data-piece-color",
         ) as PieceColor;
