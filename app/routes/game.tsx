@@ -30,6 +30,7 @@ export default function GameBoard() {
   let [openCells, setOpenCells] = useState<PositionTuple[] | undefined>(
     undefined,
   );
+  let [playerTurn, setPlayerTurn] = useState<"white" | "black">("white");
   let [seletedCell, setSelectedCell] = useState<BoardCell | null>(null);
   const containerRef = useRef(null);
 
@@ -44,6 +45,11 @@ export default function GameBoard() {
     piece: PieceType | null;
     pieceColor: PieceColor;
   }) {
+    // case not your turn
+    // if () {
+    //   console.log(`It's ${playerTurn}'s turn`);
+    //   return;
+    // }
     // case clicking allready selected cell
     if (
       seletedCell?.columnIndex === cell.columnIndex &&
@@ -66,6 +72,7 @@ export default function GameBoard() {
       setBoard(newBoard);
       setOpenCells(undefined);
       setSelectedCell(null);
+      setPlayerTurn((prevState) => (prevState === "white" ? "black" : "white"));
       return;
     }
     let openPositions = getOpenPositions(cell, board);

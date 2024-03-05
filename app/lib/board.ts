@@ -567,7 +567,7 @@ export function getChessOpenPositions(
   let { cell, board } = props;
   let { pieceColor, piece } = cell;
   if (piece !== "king") {
-    throw Error("checkForCheckThreat is not check on the k");
+    throw Error("checkForCheckThreat is not check on the king");
   }
   let defenderPieces = board.flatMap((row) =>
     row.filter((cell) => cell.pieceColor === pieceColor),
