@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from "react";
 
 import Cell from "~/components/Cell";
 import {
+  ChessMovement,
   PositionTuple,
   buildBoard,
   checkForCheckThreat,
+  getChessOpenPositions,
   getOpenPositions,
   getPiecePosition,
   movePiece,
@@ -33,9 +35,12 @@ export default function GameBoard() {
   let [openCells, setOpenCells] = useState<PositionTuple[] | undefined>(
     undefined,
   );
-  let [playerTurn, setPlayerTurn] = useState<PieceColor>("white");
   let [seletedCell, setSelectedCell] = useState<BoardCell | null>(null);
-  let [isChessState, setIsChessState] = useState(false);
+  let [gameState, setGameState] = useState<{
+    playerTurn: PieceColor;
+    isChessState: boolean;
+    chessMovements: ChessMovement[];
+  }>({ playerTurn: "white", isChessState: false, chessMovements: [] });
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -50,8 +55,8 @@ export default function GameBoard() {
     pieceColor: PieceColor;
   }) {
     // case not your turn
-    if (!seletedCell && cell.pieceColor !== playerTurn) {
-      console.log(`It's ${playerTurn}'s turn`);
+    if (!seletedCell && cell.pieceColor !== gameState.playerTurn) {
+      console.log(`It's ${gameState.playerTurn}'s turn`);
       return;
     }
     // case clicking allready selected cell
@@ -78,7 +83,7 @@ export default function GameBoard() {
       setOpenCells(undefined);
       setSelectedCell(null);
       let rivalKingPosition = getPiecePosition({
-        pieceColor: playerTurn === "white" ? "black" : "white",
+        pieceColor: gameState.playerTurn === "white" ? "black" : "white",
         pieceType: "king",
         board: newBoard,
       });
@@ -91,11 +96,49 @@ export default function GameBoard() {
         board: newBoard,
       });
       if (isChess) {
-        setIsChessState(true);
+        let openPiecesPositions = getChessOpenPositions({
+          cell: board[row][column],
+          board: newBoard,
+        });
+        // check for check mate
+        if (!openPiecesPositions.length) {
+          console.log(`player ${gameState.playerTurn} won!`);
+          return;
+        }
+        setGameState((prevState) => ({
+          ...prevState,
+          isChessState: true,
+          playerTurn: prevState.playerTurn === "white" ? "black" : "white",
+          chessMovements: openPiecesPositions,
+        }));
+        return;
       }
-      setPlayerTurn((prevState) => (prevState === "white" ? "black" : "white"));
+      setGameState((prevState) => ({
+        ...prevState,
+        isChessState: false,
+        playerTurn: prevState.playerTurn === "white" ? "black" : "white",
+        chessMovements: [],
+      }));
       return;
     }
+    // case no cell selected yet
+    // case there's a chess threat
+    if (gameState.isChessState) {
+      let selectedPiece = gameState.chessMovements.find(
+        (piece) =>
+          piece.cell.rowIndex === cell.rowIndex &&
+          piece.cell.columnIndex === cell.columnIndex &&
+          piece.cell.piece === cell.piece,
+      );
+      if (!selectedPiece?.positions?.length) {
+        console.log("does not stop chess");
+        return;
+      }
+      setOpenCells(selectedPiece.positions);
+      setSelectedCell(selectedPiece.cell);
+      return;
+    }
+    // regular case (no chess threat)
     let openPositions = getOpenPositions(cell, board);
     setOpenCells(openPositions);
     setSelectedCell(cell);

@@ -6,6 +6,11 @@ type PositionProps = {
   board: ChessBoard;
 };
 
+export type ChessMovement = {
+  positions: PositionTuple[] | undefined;
+  cell: BoardCell;
+};
+
 export function buildBoard() {
   let startBoard: ChessBoard = Array.from(Array(8).keys()).map(
     (row, rowIndex) =>
@@ -561,9 +566,7 @@ export function checkForCheckThreat(props: PositionProps): boolean {
  * @param props  board- the state ot the board, cell: the cell in which the selected king is threatened
  * @returns an array containing all movable pieces with all of thier legal positions. Empty array is returned if checkmate.
  */
-export function getChessOpenPositions(
-  props: PositionProps,
-): { cell: BoardCell; positions: PositionTuple[] | undefined }[] {
+export function getChessOpenPositions(props: PositionProps): ChessMovement[] {
   let { cell, board } = props;
   let { pieceColor, piece } = cell;
   if (piece !== "king") {
