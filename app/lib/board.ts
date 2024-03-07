@@ -1,4 +1,4 @@
-import { BoardCell, ChessBoard } from "~/routes/game";
+import { BoardCell, ChessBoard, PieceColor, PieceType } from "~/routes/game";
 export type PositionTuple = [number, number];
 
 type PositionProps = {
@@ -599,4 +599,28 @@ export function getChessOpenPositions(
     }))
     .filter((piece) => piece.positions?.length);
   return results;
+}
+
+/**
+ * Finds the position of the selected piece. If piece not found returns undefined
+ * @param props pieceType: type of piece, pieceColor: color of piece, board: board state
+ * @returns an object with row and column indices
+ */
+export function getPiecePosition(props: {
+  pieceType: PieceType;
+  pieceColor: PieceColor;
+  board: ChessBoard;
+}) {
+  let { pieceType, pieceColor, board } = props;
+  for (let i = 0; i < 8; i++) {
+    for (let k = 0; k < 8; k++) {
+      if (
+        board[i][k].piece === pieceType &&
+        board[i][k].pieceColor === pieceColor
+      ) {
+        return { row: i, column: k };
+      }
+    }
+  }
+  return undefined;
 }

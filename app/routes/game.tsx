@@ -4,12 +4,15 @@ import Cell from "~/components/Cell";
 import {
   PositionTuple,
   buildBoard,
+  checkForCheckThreat,
   getOpenPositions,
+  getPiecePosition,
   movePiece,
 } from "~/lib/board";
 import { getPieceSrc } from "~/lib/pieces";
 
-export type PieceColor = "white" | "black" | "";
+export type PieceColor = "white" | "black";
+export type CellColor = PieceColor | "";
 export type PieceType =
   | "pawn"
   | "rook"
@@ -21,7 +24,7 @@ export type BoardCell = {
   rowIndex: number;
   columnIndex: number;
   piece: PieceType | null;
-  pieceColor: PieceColor;
+  pieceColor: CellColor;
 };
 export type ChessBoard = BoardCell[][];
 
@@ -30,8 +33,9 @@ export default function GameBoard() {
   let [openCells, setOpenCells] = useState<PositionTuple[] | undefined>(
     undefined,
   );
-  let [playerTurn, setPlayerTurn] = useState<"white" | "black">("white");
+  let [playerTurn, setPlayerTurn] = useState<PieceColor>("white");
   let [seletedCell, setSelectedCell] = useState<BoardCell | null>(null);
+  let [isChessState, setIsChessState] = useState(false);
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -46,10 +50,10 @@ export default function GameBoard() {
     pieceColor: PieceColor;
   }) {
     // case not your turn
-    // if () {
-    //   console.log(`It's ${playerTurn}'s turn`);
-    //   return;
-    // }
+    if (!seletedCell && cell.pieceColor !== playerTurn) {
+      console.log(`It's ${playerTurn}'s turn`);
+      return;
+    }
     // case clicking allready selected cell
     if (
       seletedCell?.columnIndex === cell.columnIndex &&
@@ -67,11 +71,28 @@ export default function GameBoard() {
         ? true
         : false
       : false;
+    // case chooosing a viable cell to move (completing turn)
     if (isCellOpen && seletedCell && board) {
       let newBoard = movePiece(seletedCell, cell, board);
       setBoard(newBoard);
       setOpenCells(undefined);
       setSelectedCell(null);
+      let rivalKingPosition = getPiecePosition({
+        pieceColor: playerTurn === "white" ? "black" : "white",
+        pieceType: "king",
+        board: newBoard,
+      });
+      if (!rivalKingPosition) {
+        throw Error("Could not find rival king!");
+      }
+      let { row, column } = rivalKingPosition;
+      let isChess = checkForCheckThreat({
+        cell: board[row][column],
+        board: newBoard,
+      });
+      if (isChess) {
+        setIsChessState(true);
+      }
       setPlayerTurn((prevState) => (prevState === "white" ? "black" : "white"));
       return;
     }

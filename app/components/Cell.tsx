@@ -1,6 +1,6 @@
 import { twMerge } from "tailwind-merge";
 
-import { PieceColor } from "~/routes/game";
+import { CellColor } from "~/routes/game";
 
 type CellProps = {
   columnIndex: number;
@@ -8,7 +8,7 @@ type CellProps = {
   pieceSrc: string;
   isSelected: boolean;
   piece: string | null;
-  pieceColor: PieceColor;
+  pieceColor: CellColor;
 };
 export default function Cell(props: CellProps) {
   let { columnIndex, rowIndex, pieceSrc, isSelected, piece, pieceColor } =
