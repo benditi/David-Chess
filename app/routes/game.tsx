@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import Cell from "~/components/Cell";
+import Popup from "~/components/Popup";
 import {
   ChessMovement,
   PositionTuple,
@@ -42,6 +43,11 @@ export default function GameBoard() {
     isChessState: boolean;
     chessMovements: ChessMovement[];
   }>({ playerTurn: "white", isChessState: false, chessMovements: [] });
+  const [popupState, setPopupState] = useState({
+    isOpen: false,
+    winningPlayer: "",
+  });
+
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -112,6 +118,7 @@ export default function GameBoard() {
         // check for check mate
         if (!openPiecesPositions.length) {
           console.log(`player ${gameState.playerTurn} won!`);
+          setPopupState({ isOpen: true, winningPlayer: gameState.playerTurn });
           return;
         }
         setGameState((prevState) => ({
@@ -248,6 +255,14 @@ export default function GameBoard() {
           Link
         </a>
       </div>
+      <Popup
+        isOpen={popupState.isOpen}
+        onClose={() =>
+          setPopupState((prevState) => ({ ...prevState, isOpen: false }))
+        }
+        headerText={`The ${popupState.winningPlayer} player has won!`}
+        paragraphText={`The ${popupState.winningPlayer} player has won. Keep on playing!`}
+      />
     </div>
   );
 }
