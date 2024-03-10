@@ -100,6 +100,7 @@ export function getOpenPositions(cell: BoardCell, board: ChessBoard | null) {
       return [];
     }
     // checking diagnols
+    // left diagnol
     if (columnIndex > 0) {
       let leftDiagnolPiece =
         board[rowIndex + rowMovementDirection][columnIndex - 1]?.piece;
@@ -109,12 +110,20 @@ export function getOpenPositions(cell: BoardCell, board: ChessBoard | null) {
       if (leftDiagnolPiece && leftDiagnolOppositeColor) {
         positionsArray.push([rowIndex + rowMovementDirection, columnIndex - 1]);
       }
+    }
+    // right diagnol
+    if (columnIndex < 7) {
       let rightDiagnolPiece =
         board[rowIndex + rowMovementDirection][columnIndex + 1]?.piece;
       let rightDiagnolOppositeColor =
         board[rowIndex + rowMovementDirection][columnIndex + 1]?.pieceColor !==
         pieceColor;
+      console.log("rightDiagnolOppositeColor", rightDiagnolOppositeColor);
+      console.log("rightDiagnolPiece", rightDiagnolPiece);
+
       if (rightDiagnolPiece && rightDiagnolOppositeColor) {
+        console.log("inside rightDiagnolPiece && rightDiagnolOppositeColor");
+
         positionsArray.push([rowIndex + rowMovementDirection, columnIndex + 1]);
       }
     }
