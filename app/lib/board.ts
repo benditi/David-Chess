@@ -459,8 +459,8 @@ export function checkForCheckThreat(props: PositionProps): boolean {
         ) {
           return true;
         }
+        break;
       }
-      break;
     }
   }
   //
