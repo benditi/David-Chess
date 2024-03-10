@@ -155,14 +155,14 @@ export default function GameBoard() {
       return;
     }
     // regular case (no chess threat)
-    let rivalKingPosition = getPiecePosition({
-      pieceColor: gameState.playerTurn === "white" ? "black" : "white",
+    let ownKingPosition = getPiecePosition({
+      pieceColor: gameState.playerTurn,
       pieceType: "king",
       board,
     });
-    console.log("rivalKingPosition", rivalKingPosition);
+    console.log("ownKingPosition", ownKingPosition);
 
-    if (!rivalKingPosition) {
+    if (!ownKingPosition) {
       throw Error("Could not find rival king!");
     }
     let openPositions = getOpenPositions(cell, board);
@@ -174,9 +174,11 @@ export default function GameBoard() {
         { rowIndex: position[0], columnIndex: position[1] },
         newBoard,
       );
+      console.log("position", position);
+
       return !checkForCheckThreat({
-        cell: board![rivalKingPosition!.row][rivalKingPosition!.column],
-        board: board!,
+        cell: newBoard![ownKingPosition!.row][ownKingPosition!.column],
+        board: newBoard!,
       });
     });
     setOpenCells(openPositions);

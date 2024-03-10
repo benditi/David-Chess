@@ -118,12 +118,7 @@ export function getOpenPositions(cell: BoardCell, board: ChessBoard | null) {
       let rightDiagnolOppositeColor =
         board[rowIndex + rowMovementDirection][columnIndex + 1]?.pieceColor !==
         pieceColor;
-      console.log("rightDiagnolOppositeColor", rightDiagnolOppositeColor);
-      console.log("rightDiagnolPiece", rightDiagnolPiece);
-
       if (rightDiagnolPiece && rightDiagnolOppositeColor) {
-        console.log("inside rightDiagnolPiece && rightDiagnolOppositeColor");
-
         positionsArray.push([rowIndex + rowMovementDirection, columnIndex + 1]);
       }
     }
@@ -484,6 +479,8 @@ export function checkForCheckThreat(props: PositionProps): boolean {
         currentCell.piece === "rook" ||
         currentCell.piece === "queen"
       ) {
+        console.log("@@chess down the file");
+
         return true;
       }
       break;
@@ -500,6 +497,7 @@ export function checkForCheckThreat(props: PositionProps): boolean {
         currentCell.piece === "rook" ||
         currentCell.piece === "queen"
       ) {
+        console.log("@@chess up the file");
         return true;
       }
       break;
