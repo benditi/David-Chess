@@ -410,6 +410,7 @@ export function checkForCheckThreat(props: PositionProps): boolean {
       i++, j--
     ) {
       let currentCell = board[i][j];
+
       if (currentCell.piece) {
         if (currentCell.pieceColor === pieceColor) {
           break;
@@ -428,8 +429,8 @@ export function checkForCheckThreat(props: PositionProps): boolean {
         ) {
           return true;
         }
+        break;
       }
-      break;
     }
   }
   // bottom right

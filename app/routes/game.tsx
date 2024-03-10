@@ -6,6 +6,7 @@ import {
   PositionTuple,
   buildBoard,
   checkForCheckThreat,
+  copyBoard,
   getChessOpenPositions,
   getOpenPositions,
   getPiecePosition,
@@ -54,6 +55,10 @@ export default function GameBoard() {
     piece: PieceType | null;
     pieceColor: PieceColor;
   }) {
+    // case no board throw error
+    if (!board) {
+      throw Error("No board state");
+    }
     // case not your turn
     if (!seletedCell && cell.pieceColor !== gameState.playerTurn) {
       console.log(`It's ${gameState.playerTurn}'s turn`);
@@ -77,7 +82,7 @@ export default function GameBoard() {
         : false
       : false;
     // case chooosing a viable cell to move (completing turn)
-    if (isCellOpen && seletedCell && board) {
+    if (isCellOpen && seletedCell) {
       let newBoard = movePiece(seletedCell, cell, board);
       setBoard(newBoard);
       setOpenCells(undefined);
@@ -87,6 +92,8 @@ export default function GameBoard() {
         pieceType: "king",
         board: newBoard,
       });
+      console.log("rivalKingPosition", rivalKingPosition);
+
       if (!rivalKingPosition) {
         throw Error("Could not find rival king!");
       }
@@ -95,6 +102,8 @@ export default function GameBoard() {
         cell: board[row][column],
         board: newBoard,
       });
+      console.log("isChess", isChess);
+
       if (isChess) {
         let openPiecesPositions = getChessOpenPositions({
           cell: board[row][column],
@@ -139,7 +148,30 @@ export default function GameBoard() {
       return;
     }
     // regular case (no chess threat)
+    let rivalKingPosition = getPiecePosition({
+      pieceColor: gameState.playerTurn === "white" ? "black" : "white",
+      pieceType: "king",
+      board,
+    });
+    console.log("rivalKingPosition", rivalKingPosition);
+
+    if (!rivalKingPosition) {
+      throw Error("Could not find rival king!");
+    }
     let openPositions = getOpenPositions(cell, board);
+    // filter positions for possible chess
+    openPositions = openPositions?.filter((position) => {
+      let newBoard = copyBoard(board!);
+      movePiece(
+        cell,
+        { rowIndex: position[0], columnIndex: position[1] },
+        newBoard,
+      );
+      return !checkForCheckThreat({
+        cell: board![rivalKingPosition!.row][rivalKingPosition!.column],
+        board: board!,
+      });
+    });
     setOpenCells(openPositions);
     setSelectedCell(cell);
   }

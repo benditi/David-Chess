@@ -209,3 +209,42 @@ test("expect black king to be threatend by white knight", () => {
   // Expected result: The black king should be threatened by the white knight
   expect(isWhiteThreatened).toBe(true);
 });
+test("expect black king to be threatend by white bishop", () => {
+  // Build the initial board
+  let board = copyBoard(initialBoard);
+
+  board[1][4].piece = null;
+  board[1][4].pieceColor = "";
+  board[3][4].piece = "pawn";
+  board[3][4].pieceColor = "black";
+  board[1][5].piece = null;
+  board[1][5].pieceColor = "";
+  board[0][1].piece = null;
+  board[0][1].pieceColor = "";
+  board[2][2].piece = "knight";
+  board[2][2].pieceColor = "black";
+  // simulate capture of bishop and moving black king
+  board[0][6].piece = "king";
+  board[0][6].pieceColor = "black";
+  // white moves (3 moves)
+  board[6][4].piece = null;
+  board[6][4].pieceColor = "";
+  board[7][3].piece = null;
+  board[7][3].pieceColor = "";
+  board[5][5].piece = "queen";
+  board[5][5].pieceColor = "white";
+  board[7][5].piece = null;
+  board[7][5].pieceColor = "";
+  board[3][3].piece = "bishop";
+  board[3][3].pieceColor = "white";
+  // console.log('board',board);
+
+  // Check if the black king at [0,6] is threatened
+  const isWhiteThreatened = checkForCheckThreat({
+    cell: board[0][6],
+    board,
+  });
+
+  // Expected result: The black king should be threatened by the white bishop
+  expect(isWhiteThreatened).toBe(true);
+});
