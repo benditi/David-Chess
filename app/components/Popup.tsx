@@ -20,6 +20,7 @@ export default function Popup(props: PopupProps) {
         className="relative z-10"
         initialFocus={cancelButtonRef}
         onClose={onClose}
+        data-testid="popup"
       >
         <Transition.Child
           as={Fragment}

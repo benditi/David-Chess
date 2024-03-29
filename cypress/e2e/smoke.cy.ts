@@ -48,4 +48,17 @@ describe("smoke tests", () => {
 
     cy.findByText("No notes yet");
   });
+  it("should make a fool's mate", () => {
+    cy.login();
+    cy.visitAndCheck("/game");
+    cy.findAllByTestId("6-5").click();
+    cy.findAllByTestId("5-5").click();
+    cy.findAllByTestId("1-4").click();
+    cy.findAllByTestId("3-4").click();
+    cy.findAllByTestId("6-6").click();
+    cy.findAllByTestId("4-6").click();
+    cy.findAllByTestId("0-3").click();
+    cy.findAllByTestId("4-7").click();
+    cy.get('[data-testid="popup"]').contains(`The black player has won!`);
+  });
 });

@@ -35,6 +35,7 @@ export default function Cell(props: CellProps) {
       data-column={columnIndex}
       data-piece={piece}
       data-piece-color={pieceColor}
+      data-testid={`${rowIndex}-${columnIndex}`}
     >
       {pieceSrc ? <img src={pieceSrc} alt="" className="w-8" /> : null}
       {isSelected ? (
