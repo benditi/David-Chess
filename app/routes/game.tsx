@@ -174,10 +174,13 @@ export default function GameBoard() {
         { rowIndex: position[0], columnIndex: position[1] },
         newBoard,
       );
-      console.log("position", position);
-
+      // checking incase pice selected is the king itself, than it's position is changing
+      let kingCell =
+        cell.piece === "king"
+          ? newBoard[position[0]][position[1]]
+          : newBoard![ownKingPosition!.row][ownKingPosition!.column];
       return !checkForCheckThreat({
-        cell: newBoard![ownKingPosition!.row][ownKingPosition!.column],
+        cell: kingCell,
         board: newBoard!,
       });
     });

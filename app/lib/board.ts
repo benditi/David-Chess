@@ -354,7 +354,7 @@ export function checkForCheckThreat(props: PositionProps): boolean {
   let { cell, board } = props;
   let { rowIndex, columnIndex, pieceColor, piece } = cell;
   if (piece !== "king") {
-    throw Error("checkForCheckThreat is not check on the k");
+    throw Error("checkForCheckThreat is not check on the king");
   }
   // checking diagnols
   // top left
