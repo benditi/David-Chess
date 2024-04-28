@@ -31,6 +31,11 @@ export type BoardCell = {
   pieceColor: CellColor;
 };
 export type ChessBoard = BoardCell[][];
+type CastlingState = {
+  hasKingMoved: boolean;
+  hasRightRookMoved: boolean;
+  hasLeftRookMoved: boolean;
+};
 
 export default function GameBoard() {
   let [board, setBoard] = useState<null | ChessBoard>(null);
@@ -43,10 +48,25 @@ export default function GameBoard() {
     isChessState: boolean;
     chessMovements: ChessMovement[];
   }>({ playerTurn: "white", isChessState: false, chessMovements: [] });
+  let [castlingState, setCastlingState] = useState<
+    Record<PieceColor, CastlingState>
+  >({
+    black: {
+      hasKingMoved: false,
+      hasRightRookMoved: false,
+      hasLeftRookMoved: false,
+    },
+    white: {
+      hasKingMoved: false,
+      hasRightRookMoved: false,
+      hasLeftRookMoved: false,
+    },
+  });
   const [popupState, setPopupState] = useState({
     isOpen: false,
     winningPlayer: "",
   });
+  console.log("castlingState", castlingState);
 
   const containerRef = useRef(null);
 
@@ -128,6 +148,38 @@ export default function GameBoard() {
           chessMovements: openPiecesPositions,
         }));
         return;
+      }
+      // checking if king has moved
+      if (
+        seletedCell.pieceColor &&
+        !castlingState[seletedCell.pieceColor].hasKingMoved &&
+        seletedCell.piece === "king"
+      ) {
+        let newState = { ...castlingState };
+        newState[seletedCell!.pieceColor].hasKingMoved = true;
+        setCastlingState(newState);
+      }
+      // checking if hasLeftRookMoved
+      if (
+        seletedCell.pieceColor &&
+        !castlingState[seletedCell.pieceColor].hasLeftRookMoved &&
+        seletedCell.piece === "rook" &&
+        seletedCell.columnIndex === 0
+      ) {
+        let newState = { ...castlingState };
+        newState[seletedCell!.pieceColor].hasLeftRookMoved = true;
+        setCastlingState(newState);
+      }
+      // checking if hasRightRookMoved
+      if (
+        seletedCell.pieceColor &&
+        !castlingState[seletedCell.pieceColor].hasRightRookMoved &&
+        seletedCell.piece === "rook" &&
+        seletedCell.columnIndex === 7
+      ) {
+        let newState = { ...castlingState };
+        newState[seletedCell!.pieceColor].hasRightRookMoved = true;
+        setCastlingState(newState);
       }
       setGameState((prevState) => ({
         ...prevState,
