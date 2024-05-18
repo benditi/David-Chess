@@ -8,6 +8,7 @@ import {
   buildBoard,
   checkForCheckThreat,
   copyBoard,
+  getCastlingPositions,
   getChessOpenPositions,
   getOpenPositions,
   getPiecePosition,
@@ -31,7 +32,7 @@ export type BoardCell = {
   pieceColor: CellColor;
 };
 export type ChessBoard = BoardCell[][];
-type CastlingState = {
+export type CastlingState = {
   hasKingMoved: boolean;
   hasRightRookMoved: boolean;
   hasLeftRookMoved: boolean;
@@ -160,7 +161,7 @@ export default function GameBoard() {
         setCastlingState(newState);
       }
       // checking if hasLeftRookMoved
-      if (
+      else if (
         seletedCell.pieceColor &&
         !castlingState[seletedCell.pieceColor].hasLeftRookMoved &&
         seletedCell.piece === "rook" &&
@@ -171,7 +172,7 @@ export default function GameBoard() {
         setCastlingState(newState);
       }
       // checking if hasRightRookMoved
-      if (
+      else if (
         seletedCell.pieceColor &&
         !castlingState[seletedCell.pieceColor].hasRightRookMoved &&
         seletedCell.piece === "rook" &&
@@ -212,8 +213,6 @@ export default function GameBoard() {
       pieceType: "king",
       board,
     });
-    console.log("ownKingPosition", ownKingPosition);
-
     if (!ownKingPosition) {
       throw Error("Could not find rival king!");
     }
@@ -236,6 +235,14 @@ export default function GameBoard() {
         board: newBoard!,
       });
     });
+    // check castling options
+    if (cell.piece === "king") {
+      let castlingOptions = getCastlingPositions(
+        cell,
+        board,
+        castlingState[cell.pieceColor],
+      );
+    }
     setOpenCells(openPositions);
     setSelectedCell(cell);
   }

@@ -1,4 +1,10 @@
-import { BoardCell, ChessBoard, PieceColor, PieceType } from "~/routes/game";
+import {
+  BoardCell,
+  CastlingState,
+  ChessBoard,
+  PieceColor,
+  PieceType,
+} from "~/routes/game";
 export type PositionTuple = [number, number];
 
 type PositionProps = {
@@ -196,7 +202,14 @@ export function getOpenPositions(cell: BoardCell, board: ChessBoard | null) {
 export function copyBoard(board: ChessBoard): ChessBoard {
   return board.map((row) => row.map((cell) => ({ ...cell })));
 }
-
+/**
+ *
+ * @param cell chosen cell to move
+ * @param destination chosen cell position to move to
+ * @param board the current board
+ * This is a mutating function so you don't hvae to use the returned board
+ * @returns the new mutated board
+ */
 export function movePiece(
   cell: BoardCell,
   destination: { rowIndex: number; columnIndex: number },
@@ -634,4 +647,35 @@ export function getPiecePosition(props: {
     }
   }
   return undefined;
+}
+
+export function getCastlingPositions(
+  cell: BoardCell,
+  board: ChessBoard,
+  castlingState: CastlingState,
+): PositionTuple[] {
+  let castlingPositions: PositionTuple[] = [];
+  if (castlingState.hasKingMoved) {
+    return castlingPositions;
+  }
+  if (
+    !castlingState.hasLeftRookMoved &&
+    !board[cell.rowIndex][1].piece &&
+    !board[cell.rowIndex][2].piece &&
+    !board[cell.rowIndex][3].piece &&
+    !checkForCheckThreat({ board, cell: board[cell.rowIndex][2] }) &&
+    !checkForCheckThreat({ board, cell: board[cell.rowIndex][3] })
+  ) {
+    castlingPositions.push([cell.rowIndex, 2]);
+  }
+  if (
+    !castlingState.hasLeftRookMoved &&
+    !board[cell.rowIndex][5].piece &&
+    !board[cell.rowIndex][6].piece &&
+    !checkForCheckThreat({ board, cell: board[cell.rowIndex][5] }) &&
+    !checkForCheckThreat({ board, cell: board[cell.rowIndex][6] })
+  ) {
+    castlingPositions.push([cell.rowIndex, 6]);
+  }
+  return castlingPositions;
 }
