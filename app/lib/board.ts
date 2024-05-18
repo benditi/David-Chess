@@ -649,6 +649,14 @@ export function getPiecePosition(props: {
   return undefined;
 }
 
+/**
+ *
+ * @param cell The cell of the selected players king
+ * @param board The board
+ * @param castlingState the castling state of the selected player
+ * @returns an empty array if no castling options, or ann array f the castling positions (PositionTuple type)
+ */
+
 export function getCastlingPositions(
   cell: BoardCell,
   board: ChessBoard,
