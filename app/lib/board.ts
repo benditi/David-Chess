@@ -365,6 +365,9 @@ function _getKingPositions(props: PositionProps): PositionTuple[] {
 
 export function checkForCheckThreat(props: PositionProps): boolean {
   let { cell, board } = props;
+  console.log("cell", cell);
+  console.log("board", board);
+
   let { rowIndex, columnIndex, pieceColor, piece } = cell;
   if (piece !== "king") {
     throw Error("checkForCheckThreat is not check on the king");
@@ -666,22 +669,44 @@ export function getCastlingPositions(
   if (castlingState.hasKingMoved) {
     return castlingPositions;
   }
+  console.log("getCastlingPositions");
+
+  let secondBoard = copyBoard(board);
+  movePiece(cell, { rowIndex: cell.rowIndex, columnIndex: 2 }, secondBoard);
+  let thirdBoard = copyBoard(board);
+  movePiece(cell, { rowIndex: cell.rowIndex, columnIndex: 3 }, thirdBoard);
   if (
     !castlingState.hasLeftRookMoved &&
     !board[cell.rowIndex][1].piece &&
     !board[cell.rowIndex][2].piece &&
     !board[cell.rowIndex][3].piece &&
-    !checkForCheckThreat({ board, cell: board[cell.rowIndex][2] }) &&
-    !checkForCheckThreat({ board, cell: board[cell.rowIndex][3] })
+    !checkForCheckThreat({
+      board: secondBoard,
+      cell: secondBoard[cell.rowIndex][2],
+    }) &&
+    !checkForCheckThreat({
+      board: thirdBoard,
+      cell: thirdBoard[cell.rowIndex][3],
+    })
   ) {
     castlingPositions.push([cell.rowIndex, 2]);
   }
+  let fourthBoard = copyBoard(board);
+  movePiece(cell, { rowIndex: cell.rowIndex, columnIndex: 5 }, fourthBoard);
+  let fifthBoard = copyBoard(board);
+  movePiece(cell, { rowIndex: cell.rowIndex, columnIndex: 6 }, fifthBoard);
   if (
     !castlingState.hasLeftRookMoved &&
     !board[cell.rowIndex][5].piece &&
     !board[cell.rowIndex][6].piece &&
-    !checkForCheckThreat({ board, cell: board[cell.rowIndex][5] }) &&
-    !checkForCheckThreat({ board, cell: board[cell.rowIndex][6] })
+    !checkForCheckThreat({
+      board: fourthBoard,
+      cell: fourthBoard[cell.rowIndex][5],
+    }) &&
+    !checkForCheckThreat({
+      board: fifthBoard,
+      cell: fifthBoard[cell.rowIndex][6],
+    })
   ) {
     castlingPositions.push([cell.rowIndex, 6]);
   }

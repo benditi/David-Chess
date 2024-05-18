@@ -111,6 +111,28 @@ export default function GameBoard() {
     // case chooosing a viable cell to move (completing turn)
     if (isCellOpen && seletedCell) {
       let newBoard = movePiece(seletedCell, cell, board);
+      //castling
+      if (
+        seletedCell.piece === "king" &&
+        Math.abs(seletedCell.columnIndex - cell.columnIndex) === 2
+      ) {
+        console.log("cell.columnIndex", cell.columnIndex);
+
+        let rookCurrentColumnIndex = cell.columnIndex === 2 ? 0 : 7;
+        let rookFutureColumnIndex = cell.columnIndex === 2 ? 3 : 5;
+        console.log("@@rookCurrentColumnIndex", rookCurrentColumnIndex);
+        console.log("@@rookFutureColumnIndex", rookFutureColumnIndex);
+
+        newBoard = movePiece(
+          newBoard[seletedCell.rowIndex][rookCurrentColumnIndex],
+          {
+            rowIndex: seletedCell.rowIndex,
+            columnIndex: rookFutureColumnIndex,
+          },
+          newBoard,
+        );
+      }
+      //
       setBoard(newBoard);
       setOpenCells(undefined);
       setSelectedCell(null);
@@ -129,7 +151,6 @@ export default function GameBoard() {
         cell: board[row][column],
         board: newBoard,
       });
-      console.log("isChess", isChess);
 
       if (isChess) {
         let openPiecesPositions = getChessOpenPositions({
@@ -242,6 +263,7 @@ export default function GameBoard() {
         board,
         castlingState[cell.pieceColor],
       );
+      openPositions?.push(...castlingOptions);
     }
     setOpenCells(openPositions);
     setSelectedCell(cell);
