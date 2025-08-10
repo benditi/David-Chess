@@ -365,9 +365,6 @@ function _getKingPositions(props: PositionProps): PositionTuple[] {
 
 export function checkForCheckThreat(props: PositionProps): boolean {
   let { cell, board } = props;
-  console.log("cell", cell);
-  console.log("board", board);
-
   let { rowIndex, columnIndex, pieceColor, piece } = cell;
   if (piece !== "king") {
     throw Error("checkForCheckThreat is not check on the king");
@@ -380,17 +377,18 @@ export function checkForCheckThreat(props: PositionProps): boolean {
       if (currentCell.pieceColor === pieceColor) {
         break;
       }
-      // checking black pawn threat against black king
+      // checking black pawn threat against white king
       else if (
         i === rowIndex - 1 &&
         j === columnIndex - 1 &&
-        currentCell.piece === "pawn" &&
+        (currentCell.piece === "pawn" || currentCell.piece === "king") &&
         currentCell.pieceColor === "black"
       ) {
         return true;
       } else if (
         currentCell.piece === "queen" ||
-        currentCell.piece === "bishop"
+        currentCell.piece === "bishop" ||
+        currentCell.piece === "king"
       ) {
         return true;
       }
@@ -408,7 +406,7 @@ export function checkForCheckThreat(props: PositionProps): boolean {
       else if (
         i === rowIndex - 1 &&
         j === columnIndex + 1 &&
-        currentCell.piece === "pawn" &&
+        (currentCell.piece === "pawn" || currentCell.piece === "king") &&
         currentCell.pieceColor === "black"
       ) {
         return true;
@@ -435,11 +433,11 @@ export function checkForCheckThreat(props: PositionProps): boolean {
         if (currentCell.pieceColor === pieceColor) {
           break;
         }
-        // checking white pawn threat against black king
+        // checking white pawn or king threat against black king
         else if (
           i === rowIndex + 1 &&
           j === columnIndex - 1 &&
-          currentCell.piece === "pawn" &&
+          (currentCell.piece === "pawn" || currentCell.piece === "king") &&
           currentCell.pieceColor === "white"
         ) {
           return true;
@@ -469,7 +467,7 @@ export function checkForCheckThreat(props: PositionProps): boolean {
         else if (
           i === rowIndex + 1 &&
           j === columnIndex + 1 &&
-          currentCell.piece === "pawn" &&
+          (currentCell.piece === "pawn" || currentCell.piece === "king") &&
           currentCell.pieceColor === "white"
         ) {
           return true;
@@ -669,8 +667,6 @@ export function getCastlingPositions(
   if (castlingState.hasKingMoved) {
     return castlingPositions;
   }
-  console.log("getCastlingPositions");
-
   let secondBoard = copyBoard(board);
   movePiece(cell, { rowIndex: cell.rowIndex, columnIndex: 2 }, secondBoard);
   let thirdBoard = copyBoard(board);

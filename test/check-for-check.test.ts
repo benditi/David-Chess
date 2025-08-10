@@ -209,6 +209,7 @@ test("expect black king to be threatend by white knight", () => {
   // Expected result: The black king should be threatened by the white knight
   expect(isWhiteThreatened).toBe(true);
 });
+
 test("expect black king to be threatend by white bishop", () => {
   // Build the initial board
   let board = copyBoard(initialBoard);
@@ -247,4 +248,58 @@ test("expect black king to be threatend by white bishop", () => {
 
   // Expected result: The black king should be threatened by the white bishop
   expect(isWhiteThreatened).toBe(true);
+});
+
+test("expect white king cannot move to a diagnol cell neighboring black king", () => {
+  // Build the initial board
+  let board = copyBoard(initialBoard);
+
+  // Place the black king at [4,4]
+  board[0][4].piece = null;
+  board[0][4].pieceColor = "";
+  board[3][4].piece = "king";
+  board[3][4].pieceColor = "black";
+
+  // Place the white king at [6,6]
+  board[5][5].piece = null;
+  board[5][5].pieceColor = "";
+  board[4][5].piece = "king";
+  board[4][5].pieceColor = "white";
+
+  // Attempt to move the white king to [5,5], which is neighboring the black king
+  const isCheckThreat = checkForCheckThreat({
+    cell: board[4][5],
+    board,
+  });
+  console.log("isCheckThreat", isCheckThreat);
+
+  // Expected result: The white king should not be able to move to [4,5]
+  expect(isCheckThreat).toBe(true);
+});
+
+test("expect white king cannot move to a straight cell neighboring black king", () => {
+  // Build the initial board
+  let board = copyBoard(initialBoard);
+
+  // Place the black king at [4,4]
+  board[0][4].piece = null;
+  board[0][4].pieceColor = "";
+  board[3][3].piece = "king";
+  board[3][3].pieceColor = "black";
+
+  // Place the white king at [6,6]
+  board[5][5].piece = null;
+  board[5][5].pieceColor = "";
+  board[4][3].piece = "king";
+  board[4][3].pieceColor = "white";
+
+  // Attempt to move the white king to [5,5], which is neighboring the black king
+  const isCheckThreat = checkForCheckThreat({
+    cell: board[4][5],
+    board,
+  });
+  console.log("isCheckThreat", isCheckThreat);
+
+  // Expected result: The white king should not be able to move to [4,5]
+  expect(isCheckThreat).toBe(true);
 });
