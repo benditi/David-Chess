@@ -281,25 +281,58 @@ test("expect white king cannot move to a straight cell neighboring black king", 
   // Build the initial board
   let board = copyBoard(initialBoard);
 
-  // Place the black king at [4,4]
+  // Place the black king at [3,3]
   board[0][4].piece = null;
   board[0][4].pieceColor = "";
   board[3][3].piece = "king";
   board[3][3].pieceColor = "black";
 
-  // Place the white king at [6,6]
+  // Place the white king at [4,3]
   board[5][5].piece = null;
   board[5][5].pieceColor = "";
   board[4][3].piece = "king";
   board[4][3].pieceColor = "white";
 
-  // Attempt to move the white king to [5,5], which is neighboring the black king
-  const isCheckThreat = checkForCheckThreat({
+  // Check threat if white king in [4,3], which is neighboring the black king
+  const isWhiteCheckThreat = checkForCheckThreat({
+    cell: board[4][3],
+    board,
+  });
+  const isBlackCheckThreat = checkForCheckThreat({
+    cell: board[3][3],
+    board,
+  });
+
+  // Expected result: The white king should not be able to move to [4,5]
+  expect(isWhiteCheckThreat).toBe(true);
+  expect(isBlackCheckThreat).toBe(true);
+});
+
+test("expect white king can move to bottom left", () => {
+  // Build the initial board
+  let board = copyBoard(initialBoard);
+
+  // Place the black king at [3,3]
+  board[0][4].piece = null;
+  board[0][4].pieceColor = "";
+  board[4][2].piece = "king";
+  board[4][2].pieceColor = "black";
+
+  // Place the white king at [4,5]
+  board[5][5].piece = null;
+  board[5][5].pieceColor = "";
+  board[4][5].piece = "king";
+  board[4][5].pieceColor = "white";
+
+  const isWhiteCheckThreat = checkForCheckThreat({
     cell: board[4][5],
     board,
   });
-  console.log("isCheckThreat", isCheckThreat);
+  const isBlackCheckThreat = checkForCheckThreat({
+    cell: board[4][2],
+    board,
+  });
 
-  // Expected result: The white king should not be able to move to [4,5]
-  expect(isCheckThreat).toBe(true);
+  expect(isWhiteCheckThreat).toBe(false);
+  expect(isBlackCheckThreat).toBe(false);
 });
