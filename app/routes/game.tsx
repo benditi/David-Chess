@@ -8,6 +8,7 @@ import {
   buildBoard,
   checkForCheckThreat,
   copyBoard,
+  getAllOpenPositions,
   getCastlingPositions,
   getChessOpenPositions,
   getOpenPositions,
@@ -97,7 +98,6 @@ export default function GameBoard() {
       setSelectedCell(null);
       return;
     }
-    console.log("openCells", openCells);
 
     let isCellOpen = openCells?.length
       ? openCells.some(
@@ -164,6 +164,27 @@ export default function GameBoard() {
           chessMovements: openPiecesPositions,
         }));
         return;
+      } else {
+        // check for stalemate
+        const rivalKingPosition = getPiecePosition({
+          pieceColor: gameState.playerTurn === "white" ? "black" : "white",
+          pieceType: "king",
+          board: newBoard,
+        });
+        if (!rivalKingPosition) {
+          throw Error("Could not find rival king!");
+        }
+        let rivalOpenPositions = getChessOpenPositions({
+          cell: board[rivalKingPosition?.row][rivalKingPosition?.column],
+          board: newBoard,
+        });
+        console.log("rivalOpenPositions", rivalOpenPositions);
+
+        if (rivalOpenPositions.length === 0) {
+          console.log(`Stalemate!`);
+          setPopupState({ isOpen: true, winningPlayer: "No one" });
+          return;
+        }
       }
       // checking if king has moved
       if (
