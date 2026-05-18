@@ -74,6 +74,6 @@ describe("stalemate tests", () => {
     cy.findAllByTestId("0-2").click();
     cy.findAllByTestId("2-4").click();
 
-    cy.get('[data-testid="popup"]').contains("Stalemate");
+    cy.get('[data-testid="popup"]').contains("Draw!");
   });
 });
