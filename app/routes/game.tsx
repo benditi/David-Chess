@@ -64,7 +64,10 @@ export default function GameBoard() {
       hasLeftRookMoved: false,
     },
   });
-  const [popupState, setPopupState] = useState({
+  const [popupState, setPopupState] = useState<{
+    isOpen: boolean;
+    winningPlayer: string | false;
+  }>({
     isOpen: false,
     winningPlayer: "",
   });
@@ -182,7 +185,7 @@ export default function GameBoard() {
 
         if (rivalOpenPositions.length === 0) {
           console.log(`Stalemate!`);
-          setPopupState({ isOpen: true, winningPlayer: "No one" });
+          setPopupState({ isOpen: true, winningPlayer: false });
           return;
         }
       }
@@ -361,7 +364,11 @@ export default function GameBoard() {
         onClose={() =>
           setPopupState((prevState) => ({ ...prevState, isOpen: false }))
         }
-        headerText={`The ${popupState.winningPlayer} player has won!`}
+        headerText={
+          popupState.winningPlayer
+            ? `The ${popupState.winningPlayer} player has won!`
+            : "Draw!"
+        }
         paragraphText={`The ${popupState.winningPlayer} player has won. Keep on playing!`}
       />
     </div>
